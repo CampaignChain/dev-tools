@@ -1,0 +1,23 @@
+{
+    "name": "campaignchain/generator-bundle",
+    "description": "This bundle generates code for you",
+    "keywords": [],
+    "type": "symfony-bundle",
+    "homepage": "http://www.campaignchain.com",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Sandro Groganz",
+            "email": "sandro@ageofpeers.com"
+        }
+    ],
+    "require": {
+        "symfony/generator-bundle": "*",
+    },
+    "autoload": {
+        "psr-0": { "CampaignChain\\Bundle\\GeneratorBundle": "" }
+    },
+    "target-dir": "CampaignChain/Bundle/GeneratorBundle",
+    "minimum-stability": "dev",
+
+}
