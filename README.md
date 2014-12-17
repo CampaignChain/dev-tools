@@ -11,10 +11,10 @@ To install the CampaignChain module generator, follow these steps:
 2. Run "composer update" in your project directory.
 
 3. Add the following line to the end of the registerBundles::bundles array in your app/AppKernel.php file:
-```
+  ```
   new CampaignChain\GeneratorBundle\CampaignChainGeneratorBundle(),
-```
-
+  ```
+  
 4. If necessary, manually update your project's Composer autoload_psr4.php file to load the necessary classes:
 ```
   return array(
