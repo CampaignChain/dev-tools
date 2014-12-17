@@ -1,4 +1,1 @@
-generator-bundle
-================
-
-Generates CampaignChain modules
+CampaignChain Module Generator

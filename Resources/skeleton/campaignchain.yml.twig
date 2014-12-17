@@ -1,0 +1,17 @@
+
+modules:
+    {{ module_id }}:
+        display_name: '{{ module_description }}'
+        channels: 
+{% if module_type == 'activity' %}
+{% for channel in channels_for_activity %}
+            - {{ channel|trim }}
+{% endfor %}
+{% endif %}
+        routes: 
+        hooks: 
+{% if module_type == 'operation' %}        
+        services: 
+        params: 
+            owns_location: {{ owns_location }}
+{% endif %}

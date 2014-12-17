@@ -1,23 +1,24 @@
 {
-    "name": "campaignchain/generator-bundle",
-    "description": "This bundle generates code for you",
-    "keywords": [],
+    "name": "campaignchain/generator",
+    "description": "Generate CampaignChain modules from the command line",
     "type": "symfony-bundle",
     "homepage": "http://www.campaignchain.com",
     "license": "Apache-2.0",
     "authors": [
         {
             "name": "Sandro Groganz",
-            "email": "sandro@ageofpeers.com"
+            "email": "sandro@campaignchain.com"
         }
     ],
     "require": {
-        "symfony/generator-bundle": "*",
+        "symfony/symfony": "~2.5",
+        "symfony/console": "~2.5",
+        "sensio/generator-bundle": ">=2.3"
     },
     "autoload": {
-        "psr-0": { "CampaignChain\\Bundle\\GeneratorBundle": "" }
+      "psr-0": { "CampaignChain\\GeneratorBundle": "" }
     },
-    "target-dir": "CampaignChain/Bundle/GeneratorBundle",
-    "minimum-stability": "dev",
+    "extra": {
 
+    }
 }
