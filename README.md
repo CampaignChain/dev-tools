@@ -16,12 +16,12 @@ To install the CampaignChain module generator, follow these steps:
   ```
   
 4. If necessary, manually update your project's Composer autoload_psr4.php file to load the necessary classes:
-```
+  ```
   return array(
     // ....
     'CampaignChain\\GeneratorBundle\\' => array($vendorDir . '/campaignchain/dev-tools'),
   );
-```
+  ```
 
 ## Usage
   
@@ -41,7 +41,6 @@ Refer to [the CampaignChain developer documentation](http://doc.campaignchain.co
 The CampaignChain module generator will provide hints and tips throughout the module generation process, so don't worry if you don't have it all ready when you begin. 
 
 You can now start the module generator with the following command:
-
 ```
   php app/console campaignchain:generate:module
 ```  
