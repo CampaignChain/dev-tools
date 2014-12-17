@@ -30,12 +30,12 @@ class ModuleGenerator extends BundleGenerator
         return parent::generate($namespace, $bundleName, $dir, $format, $structure);
     }
     
-    public function generateConf($namespace, $bundleName, $dir, $moduleType, $moduleIdentifier, $moduleDescription, $moduleLicense, $vendorName, $vendorEmail, $packageName, $packageDescription, $operationOwnsLocation, $channelsForActivity)
+    public function generateConf($namespace, $bundleName, $dir, $moduleType, $moduleIdentifier, $moduleDescription, $moduleLicense, $vendorName, $vendorEmail, $packageName, $operationOwnsLocation, $channelsForActivity)
     {
     
         $dir .= '/'.strtr($namespace, '\\', '/');
         $namespace = str_replace("\\", "\\\\", $namespace);
-        $this->setSkeletonDirs(__DIR__ . '/Resources/skeleton');
+        $this->setSkeletonDirs(__DIR__ . '/../Resources/skeleton');
         $parameters = array(
             'namespace' => $namespace,
             'bundle_name'  => $bundleName,
@@ -46,7 +46,7 @@ class ModuleGenerator extends BundleGenerator
             'vendor_name' => $vendorName, 
             'vendor_email' => $vendorEmail,
             'package_name' => $packageName, 
-            'package_description' => $packageDescription,
+            'package_description' => $moduleDescription,
             'owns_location' => $operationOwnsLocation,
             'channels_for_activity' => explode(',', $channelsForActivity)
         );

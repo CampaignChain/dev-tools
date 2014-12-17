@@ -55,7 +55,6 @@ class GenerateModuleCommand extends GenerateBundleCommand
               new InputOption('namespace', '', InputOption::VALUE_REQUIRED, 'The bundle namespace'),
               new InputOption('bundle-name', '', InputOption::VALUE_REQUIRED, 'The bundle name'),
               new InputOption('package-name', '', InputOption::VALUE_REQUIRED, 'The Composer package name'),
-              new InputOption('package-description', '', InputOption::VALUE_REQUIRED, 'The Composer package description'),
               new InputOption('operation-owns-location', '', InputOption::VALUE_OPTIONAL, 'The \'owns_location\' parameter (for operation modules only)'),
               new InputOption('channels-for-activity', '', InputOption::VALUE_OPTIONAL, 'The \'channels\' parameter (for activity modules only)'),
               new InputOption('dir', '', InputOption::VALUE_REQUIRED, 'The bundle directory'),
@@ -77,7 +76,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
             }
         }
 
-        foreach (array('module-type', 'module-id', 'module-description', 'vendor-name', 'module-license', 'bundle-name', 'namespace', 'package-name', 'package-description', 'dir') as $option) {
+        foreach (array('module-type', 'module-id', 'module-description', 'vendor-name', 'module-license', 'bundle-name', 'namespace', 'package-name', 'dir') as $option) {
             if (null === $input->getOption($option)) {
                 throw new \RuntimeException(sprintf('The "%s" option must be provided.', $option));
             }
@@ -98,7 +97,6 @@ class GenerateModuleCommand extends GenerateBundleCommand
         $vendorName = Validators::validateVendorName($input->getOption('vendor-name'), false);
         $vendorEmail = Validators::validateVendorEmail($input->getOption('vendor-email'), false);
         $packageName = Validators::validatePackageName($input->getOption('package-name'), false);
-        $packageDescription = Validators::validateDescription($input->getOption('package-description'), false);
         $operationOwnsLocation = null;
         if ($moduleType == 'operation') {
             $operationOwnsLocation = Validators::validateOperationOwnsLocation($input->getOption('operation-owns-location'), false);
@@ -119,7 +117,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
         $generator->generate($namespace, $bundleName, $dir, $format, $structure);
         $output->writeln('Generating the bundle: <info>OK</info>');     
         
-        $generator->generateConf($namespace, $bundleName, $dir, $moduleType, $moduleIdentifier, $moduleDescription, $moduleLicense, $vendorName, $vendorEmail, $packageName, $packageDescription, $operationOwnsLocation, $channelsForActivity);
+        $generator->generateConf($namespace, $bundleName, $dir, $moduleType, $moduleIdentifier, $moduleDescription, $moduleLicense, $vendorName, $vendorEmail, $packageName, $operationOwnsLocation, $channelsForActivity);
         $output->writeln('Generating the CampaignChain configuration files: <info>OK</info>');
                
         $errors = array();
@@ -425,31 +423,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
             $packageName = $questionHelper->ask($input, $output, $question);
             $input->setOption('package-name', $packageName);
         }  
-        
-        /** package description **/
-        $packageDescription = null;       
-        try {
-            $packageDescription = $input->getOption('package-description') ? Validators::validateDescription($input->getOption('package-description')) : null;
-        } catch (\Exception $error) {
-            $output->writeln($questionHelper->getHelperSet()->get('formatter')->formatBlock($error->getMessage(), 'error'));
-        }        
-
-        if (null === $packageDescription) {        
-            $output->writeln(array(
-                '',
-                'The Composer package description is a brief string describing the package',
-                '(like <comment>Connect with Facebook</comment>).',
-                '',
-            ));
-                    
-            $question = new Question($questionHelper->getQuestion('Package description', $packageDescription), $packageDescription);
-            $question->setValidator(function ($answer) use (&$moduleType) {
-                 return Validators::validateDescription($answer, false);
-            });
-            $packageDescription = $questionHelper->ask($input, $output, $question);
-            $input->setOption('package-description', $packageDescription);
-        }  
-        
+                
         /** bundle directory **/
         $dir = null;
         

@@ -16,6 +16,6 @@
         "sensio/generator-bundle": ">=2.3"
     },
     "autoload": {
-      "psr-0": { "CampaignChain\\GeneratorBundle": "" }
+      "psr-4": { "CampaignChain\\GeneratorBundle\\": "" }
     }
 }

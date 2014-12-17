@@ -58,14 +58,8 @@ class Validators extends SensioValidators
             $msg[] = sprintf('The package name must contain a vendor name (e.g. "vendor\%s" instead of simply "%s").', $package, $package);
             throw new \InvalidArgumentException(implode("\n\n", $msg));
         }
-        
-        // validate that the package includes only a single hyphen
-        $segs = explode('-', $package);
-        if (count($segs) > 2) {
-            throw new \InvalidArgumentException(sprintf('The package name cannot contain more than one hyphen.'));        
-        }
 
-        if (!preg_match('/^(?:[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*\\\?)+(' . $moduleType . ')-(?:[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*?)$/', $package)) {
+        if (!preg_match('/^(?:[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*\\\?)+(' . $moduleType . ')(-(?:[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*?))+$/', $package)) {
             $msg = array();
             $data = explode('\\', $package);
             $msg[] = sprintf('The package name must include the specified module type \'' . $moduleType . '\' after the vendor name (e.g. "vendor/%s-%s" instead of simply "%s").', $moduleType, $data[1], $data[1]);
@@ -119,8 +113,8 @@ class Validators extends SensioValidators
     {
         foreach (explode(',', $value) as $c) {
           $c = trim(strtr($c, '/', '\\'));
-          if (!preg_match('/^(?:[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*\\\?)+(channel)-(?:[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*?)$/', $c)) {
-              throw new \InvalidArgumentException('At least one of the channel package names does not seem to be valid, each channel package name should be in the format "vendor/channel-purpose".');
+          if (!preg_match('/^(?:[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*\\\?)+(channel)(-(?:[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*?))+$/', $c)) {
+              throw new \InvalidArgumentException('At least one of the channel package names does not seem to be valid, each channel package name should be in the format "vendor/channel-*".');
           }        
         }
         return $value;
