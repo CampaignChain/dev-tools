@@ -1,0 +1,21 @@
+{
+    "name": "campaignchain/dev-tools",
+    "description": "Various tools for developing with CampaignChain, e.g. to generate CampaignChain modules from the command line.",
+    "type": "symfony-bundle",
+    "homepage": "http://www.campaignchain.com",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Sandro Groganz",
+            "email": "sandro@campaignchain.com"
+        }
+    ],
+    "require": {
+        "symfony/symfony": "~2.5",
+        "symfony/console": "~2.5",
+        "sensio/generator-bundle": ">=2.3"
+    },
+    "autoload": {
+      "psr-0": { "CampaignChain\\GeneratorBundle": "" }
+    }
+}

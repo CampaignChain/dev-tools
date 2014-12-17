@@ -1,0 +1,26 @@
+{
+    "name": "{{ package_name }}",
+    "description": "{{ package_description }}",
+    "type": "campaignchain-{{ module_type }}",
+    "license": "{{ module_license }}",
+    "authors": [
+        {
+            "name": "{{ vendor_name }}",
+            "email": "{{ vendor_email }}"
+        }
+    ],
+    "require": {
+    },
+    "autoload": {
+        "psr-4": { "{{ namespace }}\\": "" }
+    },
+    "extra": {
+        "campaignchain": {
+            "kernel": {
+                "classes": [
+                    "{{ namespace }}\\{{ bundle_name }}"
+                ]
+            }
+        }
+    }
+}
