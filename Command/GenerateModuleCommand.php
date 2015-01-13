@@ -49,6 +49,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
               new InputOption('module-type', '', InputOption::VALUE_REQUIRED, 'The module type'),
               new InputOption('module-id', '', InputOption::VALUE_REQUIRED, 'The module identifier'),
               new InputOption('module-description', '', InputOption::VALUE_REQUIRED, 'The module description'),
+              new InputOption('vendor-name', '', InputOption::VALUE_REQUIRED, 'The vendor name'),
               new InputOption('author-name', '', InputOption::VALUE_REQUIRED, 'The author name'),
               new InputOption('author-email', '', InputOption::VALUE_OPTIONAL, 'The author email address'),
               new InputOption('module-license', '', InputOption::VALUE_REQUIRED, 'The module license'),
@@ -76,7 +77,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
             }
         }
 
-        foreach (array('module-type', 'module-id', 'module-description', 'author-name', 'module-license', 'bundle-name', 'namespace', 'package-name', 'dir') as $option) {
+        foreach (array('module-type', 'module-id', 'module-description', 'vendor-name', 'author-name', 'module-license', 'bundle-name', 'namespace', 'package-name', 'dir') as $option) {
             if (null === $input->getOption($option)) {
                 throw new \RuntimeException(sprintf('The "%s" option must be provided.', $option));
             }
@@ -94,6 +95,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
         $moduleIdentifier = Validators::validateModuleIdentifier($input->getOption('module-id'), false);
         $moduleDescription = Validators::validateDescription($input->getOption('module-description'), false);
         $moduleLicense = Validators::validateModuleLicense($input->getOption('module-license'), false);
+        $vendorName = Validators::validateVendorName($input->getOption('vendor-name'), false);
         $authorName = Validators::validateAuthorName($input->getOption('author-name'), false);
         $authorEmail = Validators::validateAuthorEmail($input->getOption('author-email'), false);
         $packageName = Validators::validatePackageName($input->getOption('package-name'), false);
@@ -276,6 +278,28 @@ class GenerateModuleCommand extends GenerateBundleCommand
             }  
         }        
 
+        /** vendor name **/
+        $vendorName = null;             
+        try {
+            $vendorName = $input->getOption('vendor-name') ? Validators::validateVendorName($input->getOption('vendor-name')) : null;
+        } catch (\Exception $error) {
+            $output->writeln($questionHelper->getHelperSet()->get('formatter')->formatBlock($error->getMessage(), 'error'));
+        }        
+        if (null === $vendorName) {
+            $output->writeln(array(
+                ''
+            ));
+            $question = new Question($questionHelper->getQuestion('Vendor name', $vendorName), $vendorName);            
+            $question->setValidator(function ($answer) {
+                return Validators::validateVendorName($answer, false);
+            });
+            $vendorName = $questionHelper->ask($input, $output, $question);
+            $input->setOption('vendor-name', $vendorName);
+        } 
+
+        $derivedVendorName = preg_replace('/\s+/', '', $vendorName);
+           
+        
         /** author name **/
         $authorName = null;             
         try {
@@ -345,7 +369,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
         } catch (\Exception $error) {
             $output->writeln($questionHelper->getHelperSet()->get('formatter')->formatBlock($error->getMessage(), 'error'));
         }        
-        $recommendedNamespace = ucfirst($derivedAuthorName) . '/CampaignChain/' . ucfirst($moduleType) . '/' . ucfirst($derivedPurpose) . 'Bundle';        
+        $recommendedNamespace = ucfirst($derivedVendorName) . '/' . ucfirst($moduleType) . '/' . ucfirst($derivedPurpose) . 'Bundle';        
         if (null === $namespace) {
             $output->writeln(array(
                 '',
@@ -355,7 +379,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
                 ' and it should end with the bundle name itself (which must have',
                 '<comment>Bundle</comment> as a suffix).',
                 '',
-                'Based on the author name and module type, we suggest the namespace ',
+                'Based on the vendor name and module type, we suggest the namespace ',
                 '<comment>'.$recommendedNamespace.'</comment>.',
                 ''
             ));
@@ -403,7 +427,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
         } catch (\Exception $error) {
             $output->writeln($questionHelper->getHelperSet()->get('formatter')->formatBlock($error->getMessage(), 'error'));
         }        
-        $recommendedPackageName = strtolower($derivedAuthorName) . '/' . strtolower($moduleType) . '-' . strtolower($derivedPurpose);        
+        $recommendedPackageName = strtolower($derivedVendorName) . '/' . strtolower($moduleType) . '-' . strtolower($derivedPurpose);        
 
         if (null === $packageName) {        
             $output->writeln(array(
@@ -412,7 +436,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
                 'a separating slash (/), then the module type followed by a dash and',
                 'the bundle\'s purpose (like <comment>acme/channel-google</comment>).',
                 '',
-                'Based on the author name and module type, we suggest the package name ',
+                'Based on the vendor name and module type, we suggest the package name ',
                 '<comment>'.$recommendedPackageName.'</comment>.',
             ));
                     

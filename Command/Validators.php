@@ -85,6 +85,14 @@ class Validators extends SensioValidators
         return $name;
     }
 
+    public static function validateVendorName($name)
+    {
+        if(!preg_match("/^[a-zA-Z0-9.\-\_\s]+$/", $name)) {
+            throw new \InvalidArgumentException('The vendor name contains invalid characters.');
+        }
+        return $name;
+    }
+    
     public static function validateAuthorEmail($email)
     {
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
