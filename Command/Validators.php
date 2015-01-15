@@ -127,5 +127,15 @@ class Validators extends SensioValidators
         }
         return $value;
     }
-    
+
+    public static function validateBooleanAnswer($type)
+    {
+        $type = strtolower($type);
+
+        if (!in_array($type, array('yes', 'no'))) {
+            throw new \RuntimeException(sprintf('Answer "%s" is not supported.', $type));
+        }
+
+        return $type;
+    }    
 }

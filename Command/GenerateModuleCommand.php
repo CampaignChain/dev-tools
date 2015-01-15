@@ -59,6 +59,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
               new InputOption('operation-owns-location', '', InputOption::VALUE_OPTIONAL, 'The \'owns_location\' parameter (for operation modules only)'),
               new InputOption('channels-for-activity', '', InputOption::VALUE_OPTIONAL, 'The \'channels\' parameter (for activity modules only)'),
               new InputOption('dir', '', InputOption::VALUE_REQUIRED, 'The bundle directory'),
+              new InputOption('gen-routing', '', InputOption::VALUE_REQUIRED, 'Whether to generate a routing.yml file')
               ))
             ->setName('campaignchain:generate:module')
             ->setDescription('Generates a new CampaignChain module skeleton as a bundle');
@@ -77,7 +78,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
             }
         }
 
-        foreach (array('module-type', 'module-id', 'module-description', 'vendor-name', 'author-name', 'module-license', 'bundle-name', 'namespace', 'package-name', 'dir') as $option) {
+        foreach (array('module-type', 'module-id', 'module-description', 'vendor-name', 'author-name', 'module-license', 'bundle-name', 'namespace', 'package-name', 'dir', 'gen-routing') as $option) {
             if (null === $input->getOption($option)) {
                 throw new \RuntimeException(sprintf('The "%s" option must be provided.', $option));
             }
@@ -99,6 +100,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
         $authorName = Validators::validateAuthorName($input->getOption('author-name'), false);
         $authorEmail = Validators::validateAuthorEmail($input->getOption('author-email'), false);
         $packageName = Validators::validatePackageName($input->getOption('package-name'), false);
+        $routing = Validators::validateBooleanAnswer($input->getOption('gen-routing'), false);
         $operationOwnsLocation = null;
         if ($moduleType == 'operation') {
             $operationOwnsLocation = Validators::validateOperationOwnsLocation($input->getOption('operation-owns-location'), false);
@@ -119,7 +121,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
         $generator->generate($namespace, $bundleName, $dir, $format, $structure);
         $output->writeln('Generating the bundle: <info>OK</info>');     
         
-        $generator->generateConf($namespace, $bundleName, $dir, $moduleType, $moduleIdentifier, $moduleDescription, $moduleLicense, $authorName, $authorEmail, $packageName, $operationOwnsLocation, $channelsForActivity);
+        $generator->generateConf($namespace, $bundleName, $dir, $moduleType, $moduleIdentifier, $moduleDescription, $moduleLicense, $authorName, $authorEmail, $packageName, $operationOwnsLocation, $channelsForActivity, $routing);
         $output->writeln('Generating the CampaignChain configuration files: <info>OK</info>');
                
         $errors = array();
@@ -471,7 +473,28 @@ class GenerateModuleCommand extends GenerateBundleCommand
             });
             $dir = $questionHelper->ask($input, $output, $question);
             $input->setOption('dir', $dir);
-        }        
+        } 
+
+        /** routing.yml file **/
+        $routing = null;
+        
+        try {
+            $routing = $input->getOption('gen-routing') ? Validators::validateBooleanAnswer($input->getOption('gen-routing'), $bundleName, $namespace) : null;
+        } catch (\Exception $error) {
+            $output->writeln($questionHelper->getHelperSet()->get('formatter')->formatBlock($error->getMessage(), 'error'));
+        }
+        
+        if (null === $routing) {
+            $output->writeln(array(
+                ''
+            ));
+            $question = new Question($questionHelper->getQuestion('Do you want to generate a <comment>routing.yml</comment> file?', 'yes'), 'yes');
+            $question->setValidator(function ($answer) {
+                return Validators::validateBooleanAnswer($answer, false);
+            });
+            $routing = $questionHelper->ask($input, $output, $question);
+            $input->setOption('gen-routing', $routing);
+        }          
     }
 
     
@@ -486,7 +509,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
           '',
         );
     }
-
+    
     protected function createGenerator()
     {
         return new ModuleGenerator($this->getContainer()->get('filesystem'));

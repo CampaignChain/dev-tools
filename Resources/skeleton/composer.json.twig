@@ -17,9 +17,21 @@
     "extra": {
         "campaignchain": {
             "kernel": {
+{% if gen_routing == 'yes' %}
+                "classes": [
+                    "{{ namespace }}\\{{ bundle_name }}"
+                ],
+                "routing":
+                {
+                    "name": "{{ route_prefix }}",
+                    "resource": "@{{ bundle_name }}/Resources/config/routing.yml",
+                    "prefix": "/"
+                }
+{% else %}
                 "classes": [
                     "{{ namespace }}\\{{ bundle_name }}"
                 ]
+{% endif %}
             }
         }
     }
