@@ -193,7 +193,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
               'The recommended syntax of the module identifier is to use dashes (-)',
               'to separate words. The identifier should start with an application or',
               'vendor name followed by a string that best captures the purpose of the module',
-              '(like <comment>campaignchain-twitter-update-status</comment>).',
+              '(like <comment>twitter-update-status</comment>).',
               ''              
             ));
             $question = new Question($questionHelper->getQuestion('Module identifier', $moduleIdentifier), $moduleIdentifier);            
@@ -220,7 +220,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
             $output->writeln(array(
               '',
               'The module description is a human-readable label that will be shown', 
-              'in CampaignChain’s graphical user interface',
+              'in CampaignChain\'s graphical user interface',
               '(like <comment>Update Twitter Status</comment>).',
               ''              
             ));
@@ -243,9 +243,10 @@ class GenerateModuleCommand extends GenerateBundleCommand
             if (null ===$operationOwnsLocation) {
                 $output->writeln(array(
                   '',
-                  'For Operation modules only, specify whether the operation owns its location.', 
-                  'State <comment>true</comment> or <comment>false</comment>.', 
-                  ''              
+                  'For Operation modules only, specify whether the operation owns its location.',
+                  'State <comment>true</comment> or <comment>false</comment>.',
+                  'For example, choose <comment>true</comment> if the operation creates a location, such as when posting on Twitter.',
+                  ''
                 ));
                 $question = new Question($questionHelper->getQuestion('Does the operation own its location?', 'true'), 'true');            
                 $question->setValidator(function ($answer) {
@@ -289,6 +290,10 @@ class GenerateModuleCommand extends GenerateBundleCommand
         }        
         if (null === $vendorName) {
             $output->writeln(array(
+                '',
+                'Please provide the vendor name as per the composer.json specification.',
+                'It is supposed to be one lowercase word.',
+                'Find details at https://getcomposer.org/doc/04-schema.md#name.',
                 ''
             ));
             $question = new Question($questionHelper->getQuestion('Vendor name', $vendorName), $vendorName);            
@@ -353,7 +358,9 @@ class GenerateModuleCommand extends GenerateBundleCommand
             $output->writeln(array(
                 '',
                 'The module license defines how your module can be used by others.',
-                'Example licenses include GPL, LGPL, MIT or Apache.',
+                'Please use a license identifier as specified by the SPDX License List:',
+                'http://spdx.org/licenses/.',
+                'For example: <comment>GPL-3.0+</comment>, <comment>Apache-2.0</comment>',
                 '',
             ));            
             $question = new Question($questionHelper->getQuestion('Module license', $moduleLicense), $moduleLicense);            
