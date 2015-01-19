@@ -145,7 +145,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
     protected function interact(InputInterface $input, OutputInterface $output)
     {
         $questionHelper = $this->getQuestionHelper();
-        $questionHelper->writeSection($output, 'Welcome to the CampaignChain bundle generator');
+        $questionHelper->writeSection($output, 'Welcome to the CampaignChain module generator');
         
         /** module type **/
         $moduleType = null;             
