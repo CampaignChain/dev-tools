@@ -60,16 +60,16 @@ class ModuleGenerator extends BundleGenerator
         $derivedClassName = implode('', array_map('ucwords', explode('-', $moduleIdentifier))); 
         $parameters['class_name'] = $derivedClassName;
         
-        $this->renderFile('campaignchain.yml.twig', $dir.'/campaignchain.yml', $parameters);
-        $this->renderFile('composer.json.twig', $dir.'/composer.json', $parameters);
-        $this->renderFile('config.yml.twig', $dir.'/Resources/config/config.yml', $parameters);
+        $this->renderFile('config/campaignchain.yml.twig', $dir.'/campaignchain.yml', $parameters);
+        $this->renderFile('config/composer.json.twig', $dir.'/composer.json', $parameters);
+        $this->renderFile('config/config.yml.twig', $dir.'/Resources/config/config.yml', $parameters);
         if (strtolower($moduleType) == 'operation') {
-            $this->renderFile('controller/Report.php.twig', $dir.'/Job/' . $derivedClassName . 'Report.php', $parameters);
+            $this->renderFile('job/Report.php.twig', $dir.'/Job/' . $derivedClassName . 'Report.php', $parameters);
         
         }
         if ($routing == 'yes') {
             // overwrite the default routing.yml file created by the Symfony generator
-            $this->renderFile('routing.yml.twig', $dir.'/Resources/config/routing.yml', $parameters);
+            $this->renderFile('config/routing.yml.twig', $dir.'/Resources/config/routing.yml', $parameters);
         } else {
             // remove the default routing.yml file created by the Symfony generator
             $this->filesystem->remove($dir.'/Resources/config/routing.yml');
