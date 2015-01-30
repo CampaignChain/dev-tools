@@ -19,7 +19,7 @@ class Validators extends SensioValidators
     {
         $type = strtolower($type);
 
-        if (!in_array($type, array('channel', 'location', 'activity', 'operation', 'campaign', 'milestone', 'report', 'security', 'distribution'))) {
+        if (!in_array($type, array('channel', 'location', 'activity', 'operation', 'campaign', 'milestone', 'report', 'security', 'distribution', 'hook'))) {
             throw new \RuntimeException(sprintf('Type "%s" is not supported.', $type));
         }
 

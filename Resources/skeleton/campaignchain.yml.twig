@@ -2,16 +2,29 @@
 modules:
     {{ module_id }}:
         display_name: '{{ module_description }}'
-        channels: 
 {% if module_type == 'activity' %}
+        channels: 
 {% for channel in channels_for_activity %}
             - {{ channel|trim }}
 {% endfor %}
 {% endif %}
+{% if module_type == 'hook' %}
+        identifier:
+        label: {{ module_description }}
+        type: default
+{% endif %}
+{% if module_type != 'operation' and module_type != 'location' and module_type != 'hook' %}
         routes: 
-        hooks: 
-{% if module_type == 'operation' %}        
+{% endif %}
+{% if module_type != 'hook' and module_type != 'operation' %}
+        hooks:
+{% endif %}
+{% if module_type == 'operation' or module_type == 'hook' %}
         services: 
+{% if module_type == 'operation' %}
         params: 
             owns_location: {{ owns_location }}
+        metrics:
+            activity:
+{% endif %}
 {% endif %}

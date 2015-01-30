@@ -137,7 +137,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
         //$runner($this->updateRouting($questionHelper, $input, $output, $bundleName, $format));
 
         // reminder
-        $runner($this->setReminders($output));
+        $runner($this->setReminders($output, $moduleType));
         
         $questionHelper->writeGeneratorSummary($output, $errors);
     }
@@ -165,7 +165,8 @@ class GenerateModuleCommand extends GenerateBundleCommand
               '* \'channel\', to connect to channels such as Facebook or Twitter.',
               '* \'location\', to manage e.g. various Facebook pages.',
               '* \'milestone\', e.g. to develop a new kind of milestone besides the default one with a due date.',
-              '* \'operation\', similar to Activity module type.',
+              '* \'operation\', similar to the Activity module type.',
+              '* \'hook\', for reusable functionality.',
               '* \'report\', to create custom analytics, budget or sales reports for ROI monitoring.',
               '* \'security\', e.g. functionality for channels to log in to third-party systems.',
               '* \'distribution\', an aggregation of bundles and system-wide configuration,', 
@@ -505,9 +506,9 @@ class GenerateModuleCommand extends GenerateBundleCommand
     }
 
     
-    protected function setReminders(OutputInterface $output)
+    protected function setReminders(OutputInterface $output, $moduleType)
     {
-        return array(
+        $messages = array(
           '- Edit the <comment>composer.json</comment> file and register any other classes',
           '  or bundles that you need. Also add any other routes that you need there.',
           '',
@@ -515,6 +516,37 @@ class GenerateModuleCommand extends GenerateBundleCommand
           '  global configuration options for your module.',
           '',
         );
+        if (strtolower($moduleType) == 'activity' || strtolower($moduleType) == 'channel') {
+          $messages = array_merge($messages, array(
+            '- Edit the <comment>campaignchain.yml</comment> file and update the routes for your module.',
+            '',
+          ));
+        }
+        if (strtolower($moduleType) == 'location' || strtolower($moduleType) == 'activity' || strtolower($moduleType) == 'channel') {
+          $messages = array_merge($messages, array(
+            '- Edit the <comment>campaignchain.yml</comment> file and add hooks used by your module.',
+            '',
+          ));
+        }
+        if (strtolower($moduleType) == 'operation') {
+          $messages = array_merge($messages, array(
+            '- Edit the <comment>campaignchain.yml</comment> file and add metrics for your module.',
+            '',
+          ));
+        }
+        if (strtolower($moduleType) == 'operation' || strtolower($moduleType) == 'hook') {
+          $messages = array_merge($messages, array(
+            '- Edit the <comment>campaignchain.yml</comment> file and add services used by your module.',
+            '',
+          ));
+        }
+        if (strtolower($moduleType) == 'hook') {
+          $messages = array_merge($messages, array(
+            '- Edit the <comment>campaignchain.yml</comment> file and add an identifier and label for your module.',
+            '',
+          ));
+        }        
+        return $messages;
     }
     
     protected function createGenerator()
