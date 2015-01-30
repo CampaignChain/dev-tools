@@ -204,11 +204,8 @@ class GenerateModuleCommand extends GenerateBundleCommand
             $moduleIdentifier = $questionHelper->ask($input, $output, $question);
             $input->setOption('module-id', $moduleIdentifier);
         }  
-        $derivedPurpose = '';
-        $idSegs = explode('-', $moduleIdentifier);
-        foreach ($idSegs as $seg) {
-          $derivedPurpose .= ucfirst(strtolower($seg));
-        }
+        
+        $derivedPurpose = implode('', array_map('ucwords', explode('-', $moduleIdentifier)));
 
         /** module description **/
         $moduleDescription = null;             
@@ -518,7 +515,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
         );
         if (strtolower($moduleType) == 'activity' || strtolower($moduleType) == 'channel') {
           $messages = array_merge($messages, array(
-            '- Edit the <comment>campaignchain.yml</comment> file and update the routes for your module.',
+            '- Edit the <comment>campaignchain.yml</comment> file and verify the routes for your module.',
             '',
           ));
         }
