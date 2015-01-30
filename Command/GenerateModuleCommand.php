@@ -121,7 +121,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
         $generator->generate($namespace, $bundleName, $dir, $format, $structure);
         $output->writeln('Generating the bundle: <info>OK</info>');     
         
-        $generator->generateConf($namespace, $bundleName, $dir, $moduleType, $moduleIdentifier, $moduleDescription, $moduleLicense, $authorName, $authorEmail, $packageName, $operationOwnsLocation, $channelsForActivity, $routing);
+        $generator->generateConf($namespace, $bundleName, $dir, $moduleType, $moduleIdentifier, $moduleDescription, $moduleLicense, $vendorName, $authorName, $authorEmail, $packageName, $operationOwnsLocation, $channelsForActivity, $routing);
         $output->writeln('Generating the CampaignChain configuration files: <info>OK</info>');
                
         $errors = array();
