@@ -13,18 +13,29 @@ modules:
         label: {{ module_description }}
         type: default
 {% endif %}
-{% if module_type != 'operation' and module_type != 'location' and module_type != 'hook' %}
+{% if module_type == 'activity' %}
         routes: 
+            new: {{ vendor_name }}_{{ module_type }}_{{ module_id }}_new
+            edit: {{ vendor_name }}_{{ module_type }}_{{ module_id }}_edit
+            edit_modal: {{ vendor_name }}_{{ module_type }}_{{ module_id }}_edit_modal
+            edit_api: {{ vendor_name }}_{{ module_type }}_{{ module_id }}_edit_api
+            read: {{ vendor_name }}_{{ module_type }}_{{ module_id }}_read
 {% endif %}
-{% if module_type != 'hook' and module_type != 'operation' %}
+{% if module_type == 'channel' %}
+        routes: 
+            new: {{ vendor_name }}_{{ module_type }}_{{ module_id }}_create
+{% endif %}
+{% if module_type == 'location' or module_type == 'activity' or module_type == 'channel' %}
         hooks:
 {% endif %}
-{% if module_type == 'operation' or module_type == 'hook' %}
-        services: 
 {% if module_type == 'operation' %}
+        services: 
+            report: {{ vendor_name|lower }}.job.report.{{ module_id|lower }}
         params: 
             owns_location: {{ owns_location }}
         metrics:
             activity:
 {% endif %}
+{% if module_type == 'hook' %}
+        services: 
 {% endif %}
