@@ -119,10 +119,14 @@ class Validators extends SensioValidators
 
     public static function validateChannelsForActivity($value)      
     {
+        // allow
+        // vendor/channel-module/module-name
+        // vendor/channel-module-name/module-name
+        // vendor/channel-module-name/channel-module-name
         foreach (explode(',', $value) as $c) {
           $c = trim(strtr($c, '/', '\\'));
-          if (!preg_match('/^(?:[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*\\\?)+(channel)(-(?:[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*?))+$/', $c)) {
-              throw new \InvalidArgumentException('At least one of the channel package names does not seem to be valid, each channel package name should be in the format "vendor/channel-*".');
+          if (!preg_match('/^(?:[a-zA-Z][a-zA-Z0-9_]*\\\?)+(channel)(-(?:[a-zA-Z][a-zA-Z0-9_]*\\\?))+([a-zA-Z][a-zA-Z0-9_]*)(-(?:[a-zA-Z][a-zA-Z0-9_]*?))+$/', $c)) {
+              throw new \InvalidArgumentException('At least one of the channel package names does not seem to be valid, each channel package name should be in the format "[vendor-name]/channel-[module-name]/[channel-module-name]".'); 
           }        
         }
         return $value;
