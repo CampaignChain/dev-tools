@@ -1,1 +1,27 @@
 # Please add the routes for your module here
+{% if module_type == 'activity' %}
+{{ vendor_name }}_{{ module_type }}_{{ module_id|replace({'-':'_'}) }}_new:
+  pattern: /activity/{{ module_id }}/new
+  defaults: { _controller: {{ bundle_name }}:{{ class_name }}:new }
+
+{{ vendor_name }}_{{ module_type }}_{{ module_id }}_edit:
+  pattern: /activity/{{ module_id }}/{id}/edit
+  defaults: { _controller: {{ bundle_name }}:{{ class_name }}:edit }
+
+{{ vendor_name }}_{{ module_type }}_{{ module_id }}_edit_modal:
+  pattern: /activity/{{ module_id }}/{id}/edit
+  defaults: { _controller: {{ bundle_name }}:{{ class_name }}:editModal }
+
+{{ vendor_name }}_{{ module_type }}_{{ module_id }}_edit_api:
+  pattern: /activity/{{ module_id }}/byactivity/{id}/edit
+  defaults: { _controller: {{ bundle_name }}:{{ class_name }}:editApi }
+
+{{ vendor_name }}_{{ module_type }}_{{ module_id }}_read:
+  pattern: /activity/{{ module_id }}/{id}/edit
+  defaults: { _controller: {{ bundle_name }}:{{ class_name }}:read }
+{% endif %}
+{% if module_type == 'channel' %}
+{{ vendor_name }}_{{ module_type }}_{{ module_id }}_create:
+  pattern: /activity/{{ module_id }}/create
+  defaults: { _controller: {{ bundle_name }}:{{ class_name }}:create }
+{% endif %}
