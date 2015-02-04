@@ -29,7 +29,7 @@ class Validators extends SensioValidators
     public static function validateModuleIdentifier($id)
     {
         // validate characters
-        if (!preg_match('/^(?:[a-zA-Z0-9_-\x7f-\xff]*-?)+$/', $id)) {
+        if (!preg_match('/^(?:[a-zA-Z0-9_-]*-?)+$/', $id)) {
             throw new \InvalidArgumentException('The module identifier contains invalid characters.');
         }
         return $id;
@@ -87,8 +87,8 @@ class Validators extends SensioValidators
 
     public static function validateVendorName($name)
     {
-        if(!preg_match("/^[a-zA-Z0-9.\-\_\s]+$/", $name)) {
-            throw new \InvalidArgumentException('The vendor name contains invalid characters.');
+        if(!preg_match("/^[a-z0-9.\-\_\s]+$/", $name)) {
+            throw new \InvalidArgumentException('The vendor name contains invalid or upper-case characters.');
         }
         return $name;
     }

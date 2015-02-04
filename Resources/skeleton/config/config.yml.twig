@@ -1,1 +1,14 @@
 # Please add the global configuration options for your module here
+{% if module_type == 'operation' %}
+assetic:
+    bundles:
+        - {{ bundle_name }}
+    assets:
+        {{ vendor_name }}_operation_{{ module_id|replace({'-':'_'}) }}_css:
+            inputs:
+                - '@{{ bundle_name }}/Resources/public/css/base.css'
+twig:
+    form:
+        resources:
+            - '{{ bundle_name }}:Form:fields.html.twig'
+{% endif %}

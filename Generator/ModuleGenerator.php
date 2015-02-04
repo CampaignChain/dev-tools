@@ -64,9 +64,15 @@ class ModuleGenerator extends BundleGenerator
         $this->renderFile('config/composer.json.twig', $dir.'/composer.json', $parameters);
         $this->renderFile('config/config.yml.twig', $dir.'/Resources/config/config.yml', $parameters);
         if (strtolower($moduleType) == 'operation') {
-            $this->renderFile('job/Report.php.twig', $dir.'/Job/' . $derivedClassName . 'Report.php', $parameters);
-        
+            $this->renderFile('job/Report.php.twig', $dir.'/Job/' . $derivedClassName . 'Report.php', $parameters);        
+            $this->renderFile('form/OperationType.php.twig', $dir.'/Form/Type/' . $derivedClassName . 'OperationType.php', $parameters);        
+            $this->renderFile('views/fields.html.twig', $dir.'/Resources/views/Form/fields.html.twig', $parameters);        
+            $this->renderFile('views/read.html.twig', $dir.'/Resources/views/read.html.twig', $parameters);        
+            $this->renderFile('public/css/base.css.twig', $dir.'/Resources/public/css/base.css', $parameters);        
         }
+        if (strtolower($moduleType) == 'activity') {
+            $this->renderFile('controller/Controller.php.twig', $dir.'/Controller/' . $derivedClassName . 'Controller.php', $parameters);        
+        }        
         if ($routing == 'yes') {
             // overwrite the default routing.yml file created by the Symfony generator
             $this->renderFile('config/routing.yml.twig', $dir.'/Resources/config/routing.yml', $parameters);
