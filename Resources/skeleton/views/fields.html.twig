@@ -1,0 +1,15 @@
+{% if module_type == 'operation' %}
+{{ '{%' }} block {{ vendor_name }}_operation_{{ module_id|replace({'-':'_'}) }}_widget {{ '%}' }}
+    {{ '{%' }} spaceless {{ '%}' }}
+        {{ '{%' }} stylesheets '@{{ vendor_name }}_operation_{{ module_id|replace({'-':'_'}) }}_css' {{ '%}' }}
+{% verbatim %}        <link href="{{ asset_url }}" type="text/css" rel="stylesheet" />
+        {% endstylesheets %}
+        {% include 'CampaignChainCoreBundle:Operation:field_header.html.twig' %}
+        {# add your Operation's form fields here, e.g.
+            <p>What's happening?</p>
+            {{ form_row(form.message, { 'widget_col': 12}) }}
+        #}
+        {% include 'CampaignChainCoreBundle:Operation:field_footer.html.twig' %}
+    {% endspaceless %}
+{% endblock %}{% endverbatim %}
+{% endif %}

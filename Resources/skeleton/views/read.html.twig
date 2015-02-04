@@ -1,0 +1,40 @@
+{% if module_type == 'operation' %}
+{% verbatim %}{% extends 'CampaignChainCoreBundle:Operation:read.html.twig' %}
+
+{% block operation %}{% endverbatim %}
+
+    {{ '{%' }} stylesheets '@{{ vendor_name }}_operation_{{ module_id|replace({'-':'_'}) }}_css' {{ '%}' }}
+{% verbatim %}    <link href="{{ asset_url }}" type="text/css" rel="stylesheet" />
+    {% endstylesheets %}
+
+    {% include 'CampaignChainCoreBundle:Operation:field_header.html.twig' %}
+        {# add your code here e.g.
+        {% if tweet_is_protected or tweet_not_accessible %}
+            <div class="status">{{ message|campaignchain_make_links|raw }}</div>
+        {% else %}
+            {{ message|raw }}
+        {% endif %}
+        #}
+    {% include 'CampaignChainCoreBundle:Operation:field_footer.html.twig' %}
+
+    <!-- optional: add your code here e.g.
+    <div class="btn-toolbar" role="toolbar">
+        <div class="btn-group" role="group" aria-label="...">
+            <a href="{{ status.getUrl() }}" target="_blank" class="btn btn-default"><i class="fa fa-external-link"></i> View on Twitter</a>
+        </div>
+    </div>
+    -->
+
+{% endblock %}
+
+{% block sidebar_operation %}
+    {# optional: add your code here e.g.
+    {% if tweet_is_protected %}
+        <p><i class="fa fa-lock"></i> Protected</p>
+    {% else %}
+        <p><i class="fa fa-globe"></i> Public</p>
+    {% endif %}
+    #}
+{% endblock %}
+{% endverbatim %}
+{% endif %}

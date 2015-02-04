@@ -1,0 +1,35 @@
+{% if module_type == 'operation' %}
+<?php
+
+namespace {{ namespace|replace({'\\\\': '\\'}) }}\Controller;
+
+
+class {{ class_name }}Controller extends Controller
+{
+
+    public function newAction(Request $request)
+    {
+
+    }
+
+    public function editAction(Request $request, $id)
+    {
+    
+    }
+
+    public function editModalAction(Request $request, $id)
+    {
+    
+    }
+
+    public function editApiAction(Request $request, $id)
+    {
+    
+    }
+
+    public function readAction(Request $request, $id)
+    {
+    
+    }
+}
+{% endif %}

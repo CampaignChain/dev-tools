@@ -1,0 +1,70 @@
+{% if module_type == 'operation' %}
+<?php
+
+namespace {{ namespace|replace({'\\\\': '\\'}) }}\Form\Type;
+
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Doctrine\ORM\EntityManager;
+use Symfony\Component\Form\FormView;
+use Symfony\Component\Form\FormInterface;
+
+class {{ class_name }}OperationType extends AbstractType
+{
+    private $status;
+    private $view = 'default';
+    protected $em;
+    protected $container;
+    private $location;
+
+    public function __construct(EntityManager $em, ContainerInterface $container)
+    {
+        $this->em = $em;
+        $this->container = $container;
+    }
+
+    public function setStatus($status){
+        $this->status = $status;
+    }
+
+    public function setView($view){
+        $this->view = $view;
+    }
+
+    public function setLocation($location){
+        $this->location = $location;
+    }
+
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+
+    }
+
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $defaults = array(
+            'data_class' => '{{ namespace|replace({'\\\\': '\\'}) }}\Entity\Status',
+        );
+
+        if($this->status){
+            $defaults['data'] = $this->status;
+        }
+        $resolver->setDefaults($defaults);
+    }
+
+    public function getName()
+    {
+        return '{{vendor_name}}_operation_{{ module_id|replace({'-':'_'}) }}';
+    }
+}
+{% endif %}
