@@ -3,7 +3,7 @@
 
 {% block operation %}{% endverbatim %}
 
-    {{ '{%' }} stylesheets '@{{ vendor_name }}_operation_{{ module_id|replace({'-':'_'}) }}_css' {{ '%}' }}
+    {{ '{%' }} stylesheets '@{{ vendor_name }}_operation_{{ module_name|replace({'-':'_'}) }}_css' {{ '%}' }}
 {% verbatim %}    <link href="{{ asset_url }}" type="text/css" rel="stylesheet" />
     {% endstylesheets %}
 

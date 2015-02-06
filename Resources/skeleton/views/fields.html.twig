@@ -1,7 +1,7 @@
 {% if module_type == 'operation' %}
-{{ '{%' }} block {{ vendor_name }}_operation_{{ module_id|replace({'-':'_'}) }}_widget {{ '%}' }}
+{{ '{%' }} block {{ vendor_name }}_operation_{{ module_name|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|replace({'-':'_'}) : '' }}_widget {{ '%}' }}
     {{ '{%' }} spaceless {{ '%}' }}
-        {{ '{%' }} stylesheets '@{{ vendor_name }}_operation_{{ module_id|replace({'-':'_'}) }}_css' {{ '%}' }}
+        {{ '{%' }} stylesheets '@{{ vendor_name }}_operation_{{ module_name|replace({'-':'_'}) }}_css' {{ '%}' }}
 {% verbatim %}        <link href="{{ asset_url }}" type="text/css" rel="stylesheet" />
         {% endstylesheets %}
         {% include 'CampaignChainCoreBundle:Operation:field_header.html.twig' %}

@@ -1,0 +1,58 @@
+<?php
+
+namespace {{ namespace|replace({'\\\\': '\\'}) }}\Entity;
+
+use CampaignChain\CoreBundle\Entity\Meta;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="{{vendor_name}}_operation_{{ module_name|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|replace({'-':'_'}) : '' }}")
+ */
+class {{ class_name }} extends Meta
+{
+    /**
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    protected $id;
+
+    /**
+     * @ORM\OneToOne(targetEntity="CampaignChain\CoreBundle\Entity\Operation", cascade={"persist"})
+     */
+    protected $operation;
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set operation
+     *
+     * @param \CampaignChain\CoreBundle\Entity\Operation $operation
+     * @return Status
+     */
+    public function setOperation(\CampaignChain\CoreBundle\Entity\Operation $operation = null)
+    {
+        $this->operation = $operation;
+
+        return $this;
+    }
+
+    /**
+     * Get operation
+     *
+     * @return \CampaignChain\CoreBundle\Entity\Operation
+     */
+    public function getOperation()
+    {
+        return $this->operation;
+    }
+}

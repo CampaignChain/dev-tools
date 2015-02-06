@@ -1,6 +1,6 @@
 
 modules:
-    {{ vendor_name }}-{{ module_id }}:
+    {{ vendor_name }}-{{ module_name }}{{ module_name_suffix ? '-' ~ module_name_suffix : '' }}:
         display_name: '{{ module_description }}'
 {% if module_type == 'activity' %}
         channels: 
@@ -8,34 +8,26 @@ modules:
             - {{ channel|trim }}
 {% endfor %}
 {% endif %}
-{% if module_type == 'hook' %}
-        identifier:
-        label: {{ module_description }}
-        type: default
-{% endif %}
 {% if module_type == 'activity' %}
         routes: 
-            new: {{ vendor_name }}_{{ module_type }}_{{ module_id|replace({'-':'_'}) }}_new
-            edit: {{ vendor_name }}_{{ module_type }}_{{ module_id|replace({'-':'_'}) }}_edit
-            edit_modal: {{ vendor_name }}_{{ module_type }}_{{ module_id|replace({'-':'_'}) }}_edit_modal
-            edit_api: {{ vendor_name }}_{{ module_type }}_{{ module_id|replace({'-':'_'}) }}_edit_api
-            read: {{ vendor_name }}_{{ module_type }}_{{ module_id|replace({'-':'_'}) }}_read
+            new: {{ vendor_name }}_{{ module_type }}_{{ module_name|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|replace({'-':'_'}) : '' }}_new
+            edit: {{ vendor_name }}_{{ module_type }}_{{ module_name|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|replace({'-':'_'}) : '' }}_edit
+            edit_modal: {{ vendor_name }}_{{ module_type }}_{{ module_name|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|replace({'-':'_'}) : '' }}_edit_modal
+            edit_api: {{ vendor_name }}_{{ module_type }}_{{ module_name|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|replace({'-':'_'}) : '' }}_edit_api
+            read: {{ vendor_name }}_{{ module_type }}_{{ module_name|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|replace({'-':'_'}) : '' }}_read
 {% endif %}
 {% if module_type == 'channel' %}
         routes: 
-            new: {{ vendor_name }}_{{ module_type }}_{{ module_id|replace({'-':'_'}) }}_create
+            new: {{ vendor_name }}_{{ module_type }}_{{ module_name|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|replace({'-':'_'}) : '' }}_create
 {% endif %}
 {% if module_type == 'location' or module_type == 'activity' or module_type == 'channel' %}
         hooks:
 {% endif %}
 {% if module_type == 'operation' %}
         services: 
-            report: {{ vendor_name|lower }}.job.report.{{ module_id|lower }}
+            report: {{ vendor_name|lower }}.job.report.{{ module_name|replace({'-':'_'}) }}{{ module_name_suffix ? '.' ~ module_name_suffix|replace({'-':'_'}) : '' }}
         params: 
             owns_location: {{ owns_location }}
         metrics:
             activity:
-{% endif %}
-{% if module_type == 'hook' %}
-        services: 
 {% endif %}

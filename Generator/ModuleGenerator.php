@@ -30,7 +30,7 @@ class ModuleGenerator extends BundleGenerator
         return parent::generate($namespace, $bundleName, $dir, $format, $structure);
     }
     
-    public function generateConf($namespace, $bundleName, $dir, $moduleType, $moduleIdentifier, $moduleDescription, $moduleLicense, $vendorName, $authorName, $authorEmail, $packageName, $operationOwnsLocation, $channelsForActivity, $routing)
+    public function generateConf($namespace, $bundleName, $dir, $moduleType, $moduleName, $moduleNameSuffix,  $moduleDescription, $moduleLicense, $vendorName, $authorName, $authorEmail, $packageName, $operationOwnsLocation, $channelsForActivity, $routing)
     {
     
         $dir .= '/'.strtr($namespace, '\\', '/');
@@ -40,7 +40,8 @@ class ModuleGenerator extends BundleGenerator
             'namespace' => $namespace,
             'bundle_name'  => $bundleName,
             'module_type' => $moduleType, 
-            'module_id' => $moduleIdentifier, 
+            'module_name' => $moduleName, 
+            'module_name_suffix' => $moduleNameSuffix, 
             'module_description' => $moduleDescription, 
             'module_license' => $moduleLicense, 
             'vendor_name' => $vendorName, 
@@ -57,7 +58,7 @@ class ModuleGenerator extends BundleGenerator
             $parameters['route_prefix'] = str_replace(array('/', '-'), '_', $packageName);
         }
         
-        $derivedClassName = implode('', array_map('ucwords', explode('-', $moduleIdentifier))); 
+        $derivedClassName = implode('', array_map('ucwords', explode('-', $moduleName . '-' . $moduleNameSuffix)));
         $parameters['class_name'] = $derivedClassName;
         
         $this->renderFile('config/campaignchain.yml.twig', $dir.'/campaignchain.yml', $parameters);
@@ -66,6 +67,7 @@ class ModuleGenerator extends BundleGenerator
         if (strtolower($moduleType) == 'operation') {
             $this->renderFile('job/Report.php.twig', $dir.'/Job/' . $derivedClassName . 'Report.php', $parameters);        
             $this->renderFile('form/OperationType.php.twig', $dir.'/Form/Type/' . $derivedClassName . 'OperationType.php', $parameters);        
+            $this->renderFile('entity/Entity.php.twig', $dir.'/Entity/' . $derivedClassName . '.php', $parameters);
             $this->renderFile('views/fields.html.twig', $dir.'/Resources/views/Form/fields.html.twig', $parameters);        
             $this->renderFile('views/read.html.twig', $dir.'/Resources/views/read.html.twig', $parameters);        
             $this->renderFile('public/css/base.css.twig', $dir.'/Resources/public/css/base.css', $parameters);        

@@ -19,13 +19,14 @@ class Validators extends SensioValidators
     {
         $type = strtolower($type);
 
-        if (!in_array($type, array('channel', 'location', 'activity', 'operation', 'campaign', 'milestone', 'report', 'security', 'distribution', 'hook'))) {
+        if (!in_array($type, array('channel', 'location', 'activity', 'operation', 'campaign', 'milestone', 'report', 'security', 'distribution'))) {
             throw new \RuntimeException(sprintf('Type "%s" is not supported.', $type));
         }
 
         return $type;
     }
 
+    /*
     public static function validateModuleIdentifier($id)
     {
         // validate characters
@@ -34,7 +35,26 @@ class Validators extends SensioValidators
         }
         return $id;
     }
+    */
 
+    public static function validateModuleName($name)
+    {
+        // validate characters
+        if (!preg_match('/^[a-z0-9_]+$/', $name)) {
+            throw new \InvalidArgumentException('The module name contains invalid or upper-case characters.');
+        }
+        return $name;
+    }
+
+    public static function validateModuleNameSuffix($suffix)
+    {
+        // validate characters
+        if (!preg_match('/^(?:[a-z0-9_-]*-?)+$/', $suffix)) {
+            throw new \InvalidArgumentException('The module name suffix contains invalid or upper-case characters.');
+        }
+        return $suffix;
+    }
+    
     public static function validatePackageName($package, $moduleType)
     {
         $package = strtr($package, '/', '\\');
@@ -87,7 +107,7 @@ class Validators extends SensioValidators
 
     public static function validateVendorName($name)
     {
-        if(!preg_match("/^[a-z0-9.\-\_\s]+$/", $name)) {
+        if(!preg_match("/^[a-z0-9_]+$/", $name)) {
             throw new \InvalidArgumentException('The vendor name contains invalid or upper-case characters.');
         }
         return $name;

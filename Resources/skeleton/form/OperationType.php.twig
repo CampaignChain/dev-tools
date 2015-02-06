@@ -53,7 +53,7 @@ class {{ class_name }}OperationType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $defaults = array(
-            'data_class' => '{{ namespace|replace({'\\\\': '\\'}) }}\Entity\Status',
+            'data_class' => '{{ namespace|replace({'\\\\': '\\'}) }}\Entity\{{ class_name }}',
         );
 
         if($this->status){
@@ -64,7 +64,7 @@ class {{ class_name }}OperationType extends AbstractType
 
     public function getName()
     {
-        return '{{vendor_name}}_operation_{{ module_id|replace({'-':'_'}) }}';
+        return '{{vendor_name}}_operation_{{ module_name|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|replace({'-':'_'}) : '' }}';
     }
 }
 {% endif %}

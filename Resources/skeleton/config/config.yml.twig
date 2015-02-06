@@ -4,7 +4,7 @@ assetic:
     bundles:
         - {{ bundle_name }}
     assets:
-        {{ vendor_name }}_operation_{{ module_id|replace({'-':'_'}) }}_css:
+        {{ vendor_name }}_operation_{{ module_name|replace({'-':'_'}) }}_css:
             inputs:
                 - '@{{ bundle_name }}/Resources/public/css/base.css'
 twig:
