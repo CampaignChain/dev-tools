@@ -121,7 +121,7 @@ class Validators extends SensioValidators
         return $email;
     }
     
-    public static function validateModuleLicense($license)
+    public static function validatePackageLicense($license)
     {
         if(!preg_match("/^[a-zA-Z0-9.\-\_\s]+$/", $license)) {
             throw new \InvalidArgumentException('The license contains invalid characters.');

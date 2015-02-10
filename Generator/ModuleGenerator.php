@@ -30,7 +30,7 @@ class ModuleGenerator extends BundleGenerator
         return parent::generate($namespace, $bundleName, $dir, $format, $structure);
     }
     
-    public function generateConf($namespace, $bundleName, $dir, $moduleType, $moduleName, $moduleNameSuffix,  $moduleDescription, $moduleLicense, $vendorName, $authorName, $authorEmail, $packageName, $operationOwnsLocation, $channelsForActivity, $routing)
+    public function generateConf($namespace, $bundleName, $dir, $moduleType, $moduleName, $moduleNameSuffix,  $moduleDescription, $packageLicense, $vendorName, $authorName, $authorEmail, $packageName, $operationOwnsLocation, $channelsForActivity, $routing)
     {
     
         $dir .= '/'.strtr($namespace, '\\', '/');
@@ -43,7 +43,7 @@ class ModuleGenerator extends BundleGenerator
             'module_name' => $moduleName, 
             'module_name_suffix' => $moduleNameSuffix, 
             'module_description' => $moduleDescription, 
-            'module_license' => $moduleLicense, 
+            'package_license' => $packageLicense, 
             'vendor_name' => $vendorName, 
             'author_name' => $authorName, 
             'author_email' => $authorEmail,

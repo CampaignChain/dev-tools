@@ -54,7 +54,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
               new InputOption('module-name-suffix', '', InputOption::VALUE_OPTIONAL, 'The module name (suffix)'),
               new InputOption('author-name', '', InputOption::VALUE_REQUIRED, 'The author name'),
               new InputOption('author-email', '', InputOption::VALUE_OPTIONAL, 'The author email address'),
-              new InputOption('module-license', '', InputOption::VALUE_REQUIRED, 'The module license'),
+              new InputOption('package-license', '', InputOption::VALUE_REQUIRED, 'The package license'),
               new InputOption('namespace', '', InputOption::VALUE_REQUIRED, 'The bundle namespace'),
               new InputOption('bundle-name', '', InputOption::VALUE_REQUIRED, 'The bundle name'),
               new InputOption('package-name', '', InputOption::VALUE_REQUIRED, 'The Composer package name'),
@@ -80,7 +80,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
             }
         }
 
-        foreach (array('module-type', 'module-description', 'vendor-name', 'module-name', 'author-name', 'module-license', 'bundle-name', 'namespace', 'package-name', 'dir', 'gen-routing') as $option) {
+        foreach (array('module-type', 'module-description', 'vendor-name', 'module-name', 'author-name', 'package-license', 'bundle-name', 'namespace', 'package-name', 'dir', 'gen-routing') as $option) {
             if (null === $input->getOption($option)) {
                 throw new \RuntimeException(sprintf('The "%s" option must be provided.', $option));
             }
@@ -97,7 +97,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
         $moduleType = Validators::validateModuleType($input->getOption('module-type'), false);
         //$moduleIdentifier = Validators::validateModuleIdentifier($input->getOption('module-id'), false);
         $moduleDescription = Validators::validateDescription($input->getOption('module-description'), false);
-        $moduleLicense = Validators::validateModuleLicense($input->getOption('module-license'), false);
+        $packageLicense = Validators::validatePackageLicense($input->getOption('package-license'), false);
         $vendorName = Validators::validateVendorName($input->getOption('vendor-name'), false);
         $moduleName = Validators::validateModuleName($input->getOption('module-name'), false);
         $moduleNameSuffix = Validators::validateModuleNameSuffix($input->getOption('module-name-suffix'), false);
@@ -125,7 +125,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
         $generator->generate($namespace, $bundleName, $dir, $format, $structure);
         $output->writeln('Generating the bundle: <info>OK</info>');     
         
-        $generator->generateConf($namespace, $bundleName, $dir, $moduleType, $moduleName, $moduleNameSuffix, $moduleDescription, $moduleLicense, $vendorName, $authorName, $authorEmail, $packageName, $operationOwnsLocation, $channelsForActivity, $routing);
+        $generator->generateConf($namespace, $bundleName, $dir, $moduleType, $moduleName, $moduleNameSuffix, $moduleDescription, $packageLicense, $vendorName, $authorName, $authorEmail, $packageName, $operationOwnsLocation, $channelsForActivity, $routing);
         $output->writeln('Generating the CampaignChain configuration files: <info>OK</info>');
                
         $errors = array();
@@ -414,27 +414,27 @@ class GenerateModuleCommand extends GenerateBundleCommand
             $input->setOption('author-email', $authorEmail);
         }          
 
-        /** module license **/
-        $moduleLicense = null;             
+        /** package license **/
+        $packageLicense = null;             
         try {
-            $moduleLicense = $input->getOption('module-license') ? Validators::validateModuleLicense($input->getOption('module-license')) : null;
+            $packageLicense = $input->getOption('package-license') ? Validators::validatePackageLicense($input->getOption('package-license')) : null;
         } catch (\Exception $error) {
             $output->writeln($questionHelper->getHelperSet()->get('formatter')->formatBlock($error->getMessage(), 'error'));
         }        
-        if (null === $moduleLicense) {
+        if (null === $packageLicense) {
             $output->writeln(array(
                 '',
-                'The module license defines how your module can be used by others.',
+                'The package license defines how your module(s) can be used by others.',
                 'Please use a license identifier as specified by the SPDX License List at',
                 'http://spdx.org/licenses/. For example: <comment>GPL-3.0+</comment>, <comment>Apache-2.0</comment>',
                 '',
             ));            
-            $question = new Question($questionHelper->getQuestion('Module license', $moduleLicense), $moduleLicense);            
+            $question = new Question($questionHelper->getQuestion('Package license', $packageLicense), $packageLicense);            
             $question->setValidator(function ($answer) {
-                return Validators::validateModuleLicense($answer, false);
+                return Validators::validatePackageLicense($answer, false);
             });
-            $moduleLicense = $questionHelper->ask($input, $output, $question);
-            $input->setOption('module-license', $moduleLicense);
+            $packageLicense = $questionHelper->ask($input, $output, $question);
+            $input->setOption('package-license', $packageLicense);
         }  
         
         /** bundle namespace **/
