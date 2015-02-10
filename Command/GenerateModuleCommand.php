@@ -47,7 +47,6 @@ class GenerateModuleCommand extends GenerateBundleCommand
         $this
             ->setDefinition(array(
               new InputOption('module-type', '', InputOption::VALUE_REQUIRED, 'The module type'),
-//              new InputOption('module-id', '', InputOption::VALUE_REQUIRED, 'The module identifier'),
               new InputOption('module-description', '', InputOption::VALUE_REQUIRED, 'The module description'),
               new InputOption('vendor-name', '', InputOption::VALUE_REQUIRED, 'The vendor name'),
               new InputOption('module-name', '', InputOption::VALUE_REQUIRED, 'The module name)'),
@@ -55,6 +54,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
               new InputOption('author-name', '', InputOption::VALUE_REQUIRED, 'The author name'),
               new InputOption('author-email', '', InputOption::VALUE_OPTIONAL, 'The author email address'),
               new InputOption('package-license', '', InputOption::VALUE_REQUIRED, 'The package license'),
+              new InputOption('package-website', '', InputOption::VALUE_REQUIRED, 'The package website URL'),
               new InputOption('namespace', '', InputOption::VALUE_REQUIRED, 'The bundle namespace'),
               new InputOption('bundle-name', '', InputOption::VALUE_REQUIRED, 'The bundle name'),
               new InputOption('package-name', '', InputOption::VALUE_REQUIRED, 'The Composer package name'),
@@ -81,7 +81,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
             }
         }
 
-        foreach (array('module-type', 'module-description', 'vendor-name', 'module-name', 'author-name', 'package-license', 'bundle-name', 'namespace', 'package-name', 'dir', 'gen-routing') as $option) {
+        foreach (array('module-type', 'module-description', 'vendor-name', 'module-name', 'author-name', 'package-license', 'package-website', 'bundle-name', 'namespace', 'package-name', 'dir', 'gen-routing') as $option) {
             if (null === $input->getOption($option)) {
                 throw new \RuntimeException(sprintf('The "%s" option must be provided.', $option));
             }
@@ -99,6 +99,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
         //$moduleIdentifier = Validators::validateModuleIdentifier($input->getOption('module-id'), false);
         $moduleDescription = Validators::validateDescription($input->getOption('module-description'), false);
         $packageLicense = Validators::validatePackageLicense($input->getOption('package-license'), false);
+        $packageWebsite = Validators::validatePackageWebsiteUrl($input->getOption('package-website'), false);
         $vendorName = Validators::validateVendorName($input->getOption('vendor-name'), false);
         $moduleName = Validators::validateModuleName($input->getOption('module-name'), false);
         $moduleNameSuffix = Validators::validateModuleNameSuffix($input->getOption('module-name-suffix'), false);
@@ -128,7 +129,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
         $generator->generate($namespace, $bundleName, $dir, $format, $structure);
         $output->writeln('Generating the bundle: <info>OK</info>');     
         
-        $generator->generateConf($namespace, $bundleName, $dir, $moduleType, $moduleName, $moduleNameSuffix, $moduleDescription, $packageLicense, $vendorName, $authorName, $authorEmail, $packageName, $operationOwnsLocation, $channelsForActivity, $hooksForActivity, $routing);
+        $generator->generateConf($namespace, $bundleName, $dir, $moduleType, $moduleName, $moduleNameSuffix, $moduleDescription, $packageLicense, $packageWebsite, $vendorName, $authorName, $authorEmail, $packageName, $operationOwnsLocation, $channelsForActivity, $hooksForActivity, $routing);
         $output->writeln('Generating the CampaignChain configuration files: <info>OK</info>');
                
         $errors = array();
@@ -436,6 +437,27 @@ class GenerateModuleCommand extends GenerateBundleCommand
             $packageLicense = $questionHelper->ask($input, $output, $question);
             $input->setOption('package-license', $packageLicense);
         }  
+        
+        /** package website **/
+        $packageWebsite = null;             
+        try {
+            $packageWebsite = $input->getOption('package-website') ? Validators::validatePackageWebsiteUrl($input->getOption('package-website')) : null;
+        } catch (\Exception $error) {
+            $output->writeln($questionHelper->getHelperSet()->get('formatter')->formatBlock($error->getMessage(), 'error'));
+        }        
+        if (null === $packageWebsite) {
+            $output->writeln(array(
+                '',
+                'Specify the website URL for your package.',
+                '',
+            ));            
+            $question = new Question($questionHelper->getQuestion('Package website URL', $packageWebsite), $packageWebsite);            
+            $question->setValidator(function ($answer) {
+                return Validators::validatePackageWebsiteUrl($answer, false);
+            });
+            $packageWebsite = $questionHelper->ask($input, $output, $question);
+            $input->setOption('package-website', $packageWebsite);
+        }         
         
         /** bundle namespace **/
         $namespace = null;        

@@ -120,6 +120,14 @@ class Validators extends SensioValidators
         }
         return $email;
     }
+
+    public static function validatePackageWebsiteUrl($url)
+    {
+        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+            throw new \InvalidArgumentException('The URL is invalid');
+        }
+        return $url;
+    }
     
     public static function validatePackageLicense($license)
     {
