@@ -22,6 +22,11 @@ modules:
 {% endif %}
 {% if module_type == 'location' or module_type == 'activity' or module_type == 'channel' %}
         hooks:
+{% if hooks_for_activity|length > 0 %}
+{% for hook in hooks_for_activity %}
+            {{ hook|trim }}: true
+{% endfor %}
+{% endif %}
 {% endif %}
 {% if module_type == 'operation' %}
         services: 

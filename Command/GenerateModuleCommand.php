@@ -60,6 +60,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
               new InputOption('package-name', '', InputOption::VALUE_REQUIRED, 'The Composer package name'),
               new InputOption('operation-owns-location', '', InputOption::VALUE_OPTIONAL, 'The \'owns_location\' parameter (for operation modules only)'),
               new InputOption('channels-for-activity', '', InputOption::VALUE_OPTIONAL, 'The \'channels\' parameter (for activity modules only)'),
+              new InputOption('hooks-for-activity', '', InputOption::VALUE_OPTIONAL, 'The \'hooks\' parameter (for activity modules only)'),
               new InputOption('dir', '', InputOption::VALUE_REQUIRED, 'The bundle directory'),
               new InputOption('gen-routing', '', InputOption::VALUE_REQUIRED, 'Whether to generate a routing.yml file')
               ))
@@ -110,8 +111,10 @@ class GenerateModuleCommand extends GenerateBundleCommand
             $operationOwnsLocation = Validators::validateOperationOwnsLocation($input->getOption('operation-owns-location'), false);
         }
         $channelsForActivity = null;
+        $hooksForActivity = null;
         if ($moduleType == 'activity') {
             $channelsForActivity = Validators::validateChannelsForActivity($input->getOption('channels-for-activity'), false);
+            $hooksForActivity = Validators::validateHooksForActivity($input->getOption('hooks-for-activity'), false);
         }
         
         $questionHelper->writeSection($output, 'Bundle generation');
@@ -125,7 +128,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
         $generator->generate($namespace, $bundleName, $dir, $format, $structure);
         $output->writeln('Generating the bundle: <info>OK</info>');     
         
-        $generator->generateConf($namespace, $bundleName, $dir, $moduleType, $moduleName, $moduleNameSuffix, $moduleDescription, $packageLicense, $vendorName, $authorName, $authorEmail, $packageName, $operationOwnsLocation, $channelsForActivity, $routing);
+        $generator->generateConf($namespace, $bundleName, $dir, $moduleType, $moduleName, $moduleNameSuffix, $moduleDescription, $packageLicense, $vendorName, $authorName, $authorEmail, $packageName, $operationOwnsLocation, $channelsForActivity, $hooksForActivity, $routing);
         $output->writeln('Generating the CampaignChain configuration files: <info>OK</info>');
                
         $errors = array();
@@ -342,6 +345,34 @@ class GenerateModuleCommand extends GenerateBundleCommand
                 $input->setOption('channels-for-activity', $channelsForActivity);
             }  
         }        
+
+        /* hooks value */
+        if ($moduleType == 'activity') {
+            $hooksForActivity = null;             
+            try {
+                $moduleDescription = $input->getOption('hooks-for-activity') ? Validators::validateHooksForActivity($input->getOption('hooks-for-activity')) : null;
+            } catch (\Exception $error) {
+                $output->writeln($questionHelper->getHelperSet()->get('formatter')->formatBlock($error->getMessage(), 'error'));
+            }        
+            if (null === $hooksForActivity) {
+                $output->writeln(array(
+                  '',
+                  'For Activity modules only, specify the hooks for the activity.',
+                  '',
+                  'The format for each hook name is <comment>[module-name]</comment>', 
+                  '(like <comment>campaignchain-assignee</comment>).',
+                  '',
+                  'List the hooks as a comma-separated list.', 
+                  ''              
+                ));
+                $question = new Question($questionHelper->getQuestion('Hooks for the activity', $hooksForActivity), $hooksForActivity);            
+                $question->setValidator(function ($answer) {
+                    return Validators::validateHooksForActivity($answer, false);
+                });
+                $hooksForActivity = $questionHelper->ask($input, $output, $question);
+                $input->setOption('hooks-for-activity', $hooksForActivity);
+            }  
+        }  
         
         /** author name **/
         $authorName = null;             

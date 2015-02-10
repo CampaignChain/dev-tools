@@ -152,6 +152,19 @@ class Validators extends SensioValidators
         return $value;
     }
 
+    public static function validateHooksForActivity($value)      
+    {
+        // allow
+        // channel-module
+        foreach (explode(',', $value) as $c) {
+          $c = trim($c);
+          if (!preg_match('/^(?:[a-z0-9_-]*-?)+$/', $c)) {
+              throw new \InvalidArgumentException('At least one of the hook names does not seem to be valid, each hook name should be in the format "[module-name]".'); 
+          }        
+        }
+        return $value;
+    }    
+    
     public static function validateBooleanAnswer($type)
     {
         $type = strtolower($type);
