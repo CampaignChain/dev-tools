@@ -60,7 +60,6 @@ class ModuleGenerator extends BundleGenerator
         
         $derivedClassName = implode('', array_map('ucwords', explode('-', $moduleName . '-' . $moduleNameSuffix)));
         $parameters['class_name'] = $derivedClassName;
-        $derivedFileName = implode('_', array_map('strtolower', explode('-', $moduleName . '-' . $moduleNameSuffix)));
         
         $this->renderFile('config/campaignchain.yml.twig', $dir.'/campaignchain.yml', $parameters);
         $this->renderFile('config/composer.json.twig', $dir.'/composer.json', $parameters);
@@ -75,7 +74,10 @@ class ModuleGenerator extends BundleGenerator
         }
         if (strtolower($moduleType) == 'activity') {
             $this->renderFile('controller/ActivityController.php.twig', $dir.'/Controller/' . $derivedClassName . 'Controller.php', $parameters);        
-        }        
+        }
+        if (strtolower($moduleType) == 'channel') {
+            $this->renderFile('controller/ChannelController.php.twig', $dir.'/Controller/' . $derivedClassName . 'Controller.php', $parameters);
+        }          
         if ($routing == 'yes') {
             // overwrite the default routing.yml file created by the Symfony generator
             $this->renderFile('config/routing.yml.twig', $dir.'/Resources/config/routing.yml', $parameters);
