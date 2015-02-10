@@ -184,34 +184,6 @@ class GenerateModuleCommand extends GenerateBundleCommand
             $input->setOption('module-type', $moduleType);
         }  
 
-        /** module identifier **/
-        /*
-        $moduleIdentifier = null;             
-        try {
-            $moduleIdentifier = $input->getOption('module-id') ? Validators::validateModuleIdentifier($input->getOption('module-id')) : null;
-        } catch (\Exception $error) {
-            $output->writeln($questionHelper->getHelperSet()->get('formatter')->formatBlock($error->getMessage(), 'error'));
-        }        
-        if (null === $moduleIdentifier) {
-            $output->writeln(array(
-              '',
-              'The recommended syntax of the module identifier is to use dashes (-)',
-              'to separate words. The identifier should start with an application or',
-              'vendor name followed by a string that best captures the purpose of the module',
-              '(like <comment>twitter-update-status</comment>).',
-              ''              
-            ));
-            $question = new Question($questionHelper->getQuestion('Module identifier', $moduleIdentifier), $moduleIdentifier);            
-            $question->setValidator(function ($answer) {
-                return Validators::validateModuleIdentifier($answer, false);
-            });
-            $moduleIdentifier = $questionHelper->ask($input, $output, $question);
-            $input->setOption('module-id', $moduleIdentifier);
-        }  
-        
-        $derivedPurpose = implode('', array_map('ucwords', explode('-', $moduleIdentifier)));
-        */
-
         /** vendor name **/
         $vendorName = null;             
         try {
@@ -294,14 +266,6 @@ class GenerateModuleCommand extends GenerateBundleCommand
           ''              
         ));
         
-        /*
-        $moduleIdentifierWithoutVendorName = strtolower($moduleName);
-        if (!empty($moduleNameSuffix)) {
-            $moduleIdentifierWithoutVendorName .= '-' . strtolower($moduleNameSuffix);
-        }
-        $derivedPurpose = implode('', array_map('ucwords', explode('-', $moduleIdentifierWithoutVendorName)));
-        */
-        
         /** module description **/
         $moduleDescription = null;             
         try {
@@ -361,7 +325,12 @@ class GenerateModuleCommand extends GenerateBundleCommand
             if (null === $channelsForActivity) {
                 $output->writeln(array(
                   '',
-                  'For Activity modules only, specify the channels for the activity.', 
+                  'For Activity modules only, specify the channels for the activity.',
+                  '',
+                  'The format for each channel module name is', 
+                  '<comment>vendor/channel-[module-name]/[module-id]</comment>', 
+                  '(like <comment>acme/channel-twitter/acme-twitter</comment>).',
+                  '',
                   'List the channels as a comma-separated list.', 
                   ''              
                 ));
