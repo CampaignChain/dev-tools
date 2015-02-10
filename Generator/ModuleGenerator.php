@@ -74,7 +74,7 @@ class ModuleGenerator extends BundleGenerator
             $this->renderFile('public/css/base.css.twig', $dir.'/Resources/public/css/' . strtolower($moduleName) . ((!empty($moduleNameSuffix)) ? '_' . strtolower(str_replace('-', '_', $moduleNameSuffix)) : '') . '.css', $parameters);        
         }
         if (strtolower($moduleType) == 'activity') {
-            $this->renderFile('controller/Controller.php.twig', $dir.'/Controller/' . $derivedClassName . 'Controller.php', $parameters);        
+            $this->renderFile('controller/ActivityController.php.twig', $dir.'/Controller/' . $derivedClassName . 'Controller.php', $parameters);        
         }        
         if ($routing == 'yes') {
             // overwrite the default routing.yml file created by the Symfony generator
