@@ -4,9 +4,9 @@ assetic:
     bundles:
         - {{ bundle_name }}
     assets:
-        {{ vendor_name }}_operation_{{ module_name|replace({'-':'_'}) }}_css:
+        {{ vendor_name }}_operation_{{ module_name|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|replace({'-':'_'}) : '' }}_css:
             inputs:
-                - '@{{ bundle_name }}/Resources/public/css/base.css'
+                - '@{{ bundle_name }}/Resources/public/css/{{ module_name|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|replace({'-':'_'}) : '' }}.css'
 twig:
     form:
         resources:

@@ -60,6 +60,7 @@ class ModuleGenerator extends BundleGenerator
         
         $derivedClassName = implode('', array_map('ucwords', explode('-', $moduleName . '-' . $moduleNameSuffix)));
         $parameters['class_name'] = $derivedClassName;
+        $derivedFileName = implode('_', array_map('strtolower', explode('-', $moduleName . '-' . $moduleNameSuffix)));
         
         $this->renderFile('config/campaignchain.yml.twig', $dir.'/campaignchain.yml', $parameters);
         $this->renderFile('config/composer.json.twig', $dir.'/composer.json', $parameters);
@@ -69,8 +70,8 @@ class ModuleGenerator extends BundleGenerator
             $this->renderFile('form/OperationType.php.twig', $dir.'/Form/Type/' . $derivedClassName . 'OperationType.php', $parameters);        
             $this->renderFile('entity/Entity.php.twig', $dir.'/Entity/' . $derivedClassName . '.php', $parameters);
             $this->renderFile('views/fields.html.twig', $dir.'/Resources/views/Form/fields.html.twig', $parameters);        
-            $this->renderFile('views/read.html.twig', $dir.'/Resources/views/read.html.twig', $parameters);        
-            $this->renderFile('public/css/base.css.twig', $dir.'/Resources/public/css/base.css', $parameters);        
+            $this->renderFile('views/read.html.twig', $dir.'/Resources/views/read' . ((!empty($moduleNameSuffix)) ? '_' . strtolower(str_replace('-', '_', $moduleNameSuffix)) : '') . '.html.twig', $parameters);        
+            $this->renderFile('public/css/base.css.twig', $dir.'/Resources/public/css/' . strtolower($moduleName) . ((!empty($moduleNameSuffix)) ? '_' . strtolower(str_replace('-', '_', $moduleNameSuffix)) : '') . '.css', $parameters);        
         }
         if (strtolower($moduleType) == 'activity') {
             $this->renderFile('controller/Controller.php.twig', $dir.'/Controller/' . $derivedClassName . 'Controller.php', $parameters);        
