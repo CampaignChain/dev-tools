@@ -58,9 +58,10 @@ class GenerateModuleCommand extends GenerateBundleCommand
               new InputOption('namespace', '', InputOption::VALUE_REQUIRED, 'The bundle namespace'),
               new InputOption('bundle-name', '', InputOption::VALUE_REQUIRED, 'The bundle name'),
               new InputOption('package-name', '', InputOption::VALUE_REQUIRED, 'The Composer package name'),
-              new InputOption('operation-owns-location', '', InputOption::VALUE_OPTIONAL, 'The \'owns_location\' parameter (for operation modules only)'),
-              new InputOption('channels-for-activity', '', InputOption::VALUE_OPTIONAL, 'The \'channels\' parameter (for activity modules only)'),
-              new InputOption('hooks-for-activity', '', InputOption::VALUE_OPTIONAL, 'The \'hooks\' parameter (for activity modules only)'),
+              new InputOption('operation-owns-location', '', InputOption::VALUE_OPTIONAL, 'The \'owns_location\' parameter (for Operation modules only)'),
+              new InputOption('channels-for-activity', '', InputOption::VALUE_OPTIONAL, 'The \'channels\' parameter (for Activity modules only)'),
+              new InputOption('hooks-for-activity', '', InputOption::VALUE_OPTIONAL, 'The \'hooks\' parameter (for Activity modules only)'),
+              new InputOption('metrics-for-operation', '', InputOption::VALUE_OPTIONAL, 'The \'metrics\' parameter (for Operation modules only)'),
               new InputOption('dir', '', InputOption::VALUE_REQUIRED, 'The bundle directory'),
               new InputOption('gen-routing', '', InputOption::VALUE_REQUIRED, 'Whether to generate a routing.yml file')
               ))
@@ -108,8 +109,10 @@ class GenerateModuleCommand extends GenerateBundleCommand
         $packageName = Validators::validatePackageName($input->getOption('package-name'), false);
         $routing = Validators::validateBooleanAnswer($input->getOption('gen-routing'), false);
         $operationOwnsLocation = null;
+        $metricsForOperation = null;
         if ($moduleType == 'operation') {
             $operationOwnsLocation = Validators::validateOperationOwnsLocation($input->getOption('operation-owns-location'), false);
+            $metricsForOperation = Validators::validateMetricsForOperation($input->getOption('metrics-for-operation'), false);
         }
         $channelsForActivity = null;
         $hooksForActivity = null;
@@ -129,7 +132,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
         $generator->generate($namespace, $bundleName, $dir, $format, $structure);
         $output->writeln('Generating the bundle: <info>OK</info>');     
         
-        $generator->generateConf($namespace, $bundleName, $dir, $moduleType, $moduleName, $moduleNameSuffix, $moduleDescription, $packageLicense, $packageWebsite, $vendorName, $authorName, $authorEmail, $packageName, $operationOwnsLocation, $channelsForActivity, $hooksForActivity, $routing);
+        $generator->generateConf($namespace, $bundleName, $dir, $moduleType, $moduleName, $moduleNameSuffix, $moduleDescription, $packageLicense, $packageWebsite, $vendorName, $authorName, $authorEmail, $packageName, $operationOwnsLocation, $metricsForOperation, $channelsForActivity, $hooksForActivity, $routing);
         $output->writeln('Generating the CampaignChain configuration files: <info>OK</info>');
                
         $errors = array();
@@ -318,6 +321,31 @@ class GenerateModuleCommand extends GenerateBundleCommand
             }  
         }
 
+        /* metrics value */
+        if ($moduleType == 'operation') {
+            $metricsForOperation = null;             
+            try {
+                $moduleDescription = $input->getOption('metrics-for-operation') ? Validators::validateMetricsForOperation($input->getOption('metrics-for-operation')) : null;
+            } catch (\Exception $error) {
+                $output->writeln($questionHelper->getHelperSet()->get('formatter')->formatBlock($error->getMessage(), 'error'));
+            }        
+            if (null === $metricsForOperation) {
+                $output->writeln(array(
+                  '',
+                  'For Operation modules only, specify the metrics for the operation.',
+                  '',
+                  'List the metrics as a comma-separated list.', 
+                  ''              
+                ));
+                $question = new Question($questionHelper->getQuestion('Metrics for the operation', $metricsForOperation), $metricsForOperation);            
+                $question->setValidator(function ($answer) {
+                    return Validators::validateMetricsForOperation($answer, false);
+                });
+                $metricsForOperation = $questionHelper->ask($input, $output, $question);
+                $input->setOption('metrics-for-operation', $metricsForOperation);
+            }  
+        }          
+        
         /* channels value */
         if ($moduleType == 'activity') {
             $channelsForActivity = null;             

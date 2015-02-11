@@ -8,6 +8,11 @@ use Doctrine\ORM\EntityManager;
 class {{ class_name }}Report implements JobReportInterface
 {
     const OPERATION_BUNDLE_NAME = '{{ package_name }}';
+{% if metrics_for_operation|length > 0 %}
+{% for metric in metrics_for_operation %}
+    const METRIC_{{ metric|trim|upper }} = '{{ metric|trim|capitalize }}';
+{% endfor %}
+{% endif %}
 
     protected $em;
     protected $container;

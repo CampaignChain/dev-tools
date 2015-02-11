@@ -30,7 +30,7 @@ class ModuleGenerator extends BundleGenerator
         return parent::generate($namespace, $bundleName, $dir, $format, $structure);
     }
     
-    public function generateConf($namespace, $bundleName, $dir, $moduleType, $moduleName, $moduleNameSuffix,  $moduleDescription, $packageLicense, $packageWebsite, $vendorName, $authorName, $authorEmail, $packageName, $operationOwnsLocation, $channelsForActivity, $hooksForActivity, $routing)
+    public function generateConf($namespace, $bundleName, $dir, $moduleType, $moduleName, $moduleNameSuffix,  $moduleDescription, $packageLicense, $packageWebsite, $vendorName, $authorName, $authorEmail, $packageName, $operationOwnsLocation, $metricsForOperation, $channelsForActivity, $hooksForActivity, $routing)
     {
     
         $dir .= '/'.strtr($namespace, '\\', '/');
@@ -52,7 +52,8 @@ class ModuleGenerator extends BundleGenerator
             'package_description' => $moduleDescription,
             'owns_location' => $operationOwnsLocation,
             'channels_for_activity' => explode(',', $channelsForActivity), 
-            'hooks_for_activity' => count($hooksForActivity) ? explode(',', $hooksForActivity) : null, 
+            'hooks_for_activity' => !empty($hooksForActivity) ? explode(',', $hooksForActivity) : null, 
+            'metrics_for_operation' => !empty($metricsForOperation) ? explode(',', $metricsForOperation) : null, 
             'gen_routing' => $routing
         );
         

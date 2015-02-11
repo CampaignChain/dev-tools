@@ -172,6 +172,17 @@ class Validators extends SensioValidators
         }
         return $value;
     }    
+
+    public static function validateMetricsForOperation($value)      
+    {
+        foreach (explode(',', $value) as $c) {
+          $c = trim($c);
+          if (!preg_match('/^(?:[a-zA-Z0-9_]*?)+$/', $c)) {
+              throw new \InvalidArgumentException('At least one of the metric names does not seem to be valid, use alphanumeric characters and underscores only.'); 
+          }        
+        }
+        return $value;
+    }  
     
     public static function validateBooleanAnswer($type)
     {

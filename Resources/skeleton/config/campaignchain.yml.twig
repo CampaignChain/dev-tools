@@ -33,6 +33,11 @@ modules:
             report: {{ vendor_name|lower }}.job.report.{{ module_name|replace({'-':'_'}) }}{{ module_name_suffix ? '.' ~ module_name_suffix|replace({'-':'_'}) : '' }}
         params: 
             owns_location: {{ owns_location }}
+{% if metrics_for_operation|length > 0 %}
         metrics:
             activity:
+{% for metric in metrics_for_operation %}
+                - "{{ metric|trim|capitalize }}"
+{% endfor %}
+{% endif %}
 {% endif %}
