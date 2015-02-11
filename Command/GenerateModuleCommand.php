@@ -332,7 +332,8 @@ class GenerateModuleCommand extends GenerateBundleCommand
             if (null === $metricsForOperation) {
                 $output->writeln(array(
                   '',
-                  'For Operation modules only, specify the metrics for the operation.',
+                  'For Operation modules only, specify the metrics for the operation',
+                  '(like <comment>Clicks</comment> or <comment>Clicks, Likes, Shares</comment>).',
                   '',
                   'List the metrics as a comma-separated list.', 
                   ''              
