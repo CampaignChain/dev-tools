@@ -229,8 +229,9 @@ class GenerateModuleCommand extends GenerateBundleCommand
         if (null === $moduleName) {
             $output->writeln(array(
               '',
-              'The recommended syntax of the module name is a single lowercase word',
-              'indicating the channel that the module relates to (like <comment>twitter</comment>).',
+              'The minimum syntax of the module name is a single lowercase word,',
+              'with additional optional words separated by hyphens, indicating the ',
+              'channel that the module relates to (like <comment>twitter</comment> or <comment>report-cta</comment>).',
               ''              
             ));
             $question = new Question($questionHelper->getQuestion('Module name', $moduleName), $moduleName);            
@@ -240,6 +241,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
             $moduleName = $questionHelper->ask($input, $output, $question);
             $input->setOption('module-name', $moduleName);
         }  
+        $derivedModuleName = implode('', array_map('ucwords', explode('-', $moduleName)));
 
         /** module name suffix **/
         $moduleNameSuffix = null;             
@@ -252,7 +254,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
             $output->writeln(array(
               '',
               'To further describe your module, add an optional suffix.',
-              'The recommended syntax of the module suffix is to use dashes (-)',
+              'The recommended syntax of the module suffix is to use hyphens (-)',
               'to separate words (like <comment>update-status</comment>).',
               ''              
             ));
@@ -493,18 +495,8 @@ class GenerateModuleCommand extends GenerateBundleCommand
         } catch (\Exception $error) {
             $output->writeln($questionHelper->getHelperSet()->get('formatter')->formatBlock($error->getMessage(), 'error'));
         }
-        // Parse the module name for dashes.
-        $namespaceModuleName = '';
-        $moduleNameParts = explode('-', $moduleName);
-        if(count($moduleNameParts)){
-            foreach($moduleNameParts as $moduleNamePart){
-                $namespaceModuleName .= ucfirst($moduleNamePart);
-            }
-        } else {
-            $namespaceModuleName = ucfirst($moduleName);
-        }
 
-        $recommendedNamespace = ucfirst($derivedVendorName) . '/' . ucfirst($moduleType) . '/' . $namespaceModuleName . 'Bundle';
+        $recommendedNamespace = ucfirst($derivedVendorName) . '/' . ucfirst($moduleType) . '/' . $derivedModuleName . 'Bundle';
         if (null === $namespace) {
             $output->writeln(array(
                 '',
