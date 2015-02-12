@@ -494,8 +494,19 @@ class GenerateModuleCommand extends GenerateBundleCommand
             $namespace = $input->getOption('namespace') ? Validators::validateBundleNamespace($input->getOption('namespace')) : null;
         } catch (\Exception $error) {
             $output->writeln($questionHelper->getHelperSet()->get('formatter')->formatBlock($error->getMessage(), 'error'));
-        }        
-        $recommendedNamespace = ucfirst($derivedVendorName) . '/' . ucfirst($moduleType) . '/' . ucfirst($moduleName) . 'Bundle';        
+        }
+        // Parse the module name for dashes.
+        $namespaceModuleName = '';
+        $moduleNameParts = explode('-', $moduleName);
+        if(count($moduleNameParts)){
+            foreach($moduleNameParts as $moduleNamePart){
+                $namespaceModuleName .= ucfirst($moduleNamePart);
+            }
+        } else {
+            $namespaceModuleName = ucfirst($moduleName);
+        }
+
+        $recommendedNamespace = ucfirst($derivedVendorName) . '/' . ucfirst($moduleType) . '/' . $namespaceModuleName . 'Bundle';
         if (null === $namespace) {
             $output->writeln(array(
                 '',
