@@ -47,7 +47,8 @@ class GenerateModuleCommand extends GenerateBundleCommand
         $this
             ->setDefinition(array(
               new InputOption('module-type', '', InputOption::VALUE_REQUIRED, 'The module type'),
-              new InputOption('module-description', '', InputOption::VALUE_REQUIRED, 'The module description'),
+              new InputOption('module-description', '', InputOption::VALUE_OPTIONAL, 'The module description'),
+              new InputOption('module-display-name', '', InputOption::VALUE_REQUIRED, 'The module display name'),
               new InputOption('vendor-name', '', InputOption::VALUE_REQUIRED, 'The vendor name'),
               new InputOption('module-name', '', InputOption::VALUE_REQUIRED, 'The module name)'),
               new InputOption('module-name-suffix', '', InputOption::VALUE_OPTIONAL, 'The module name (suffix)'),
@@ -82,7 +83,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
             }
         }
 
-        foreach (array('module-type', 'module-description', 'vendor-name', 'module-name', 'author-name', 'package-license', 'package-website', 'bundle-name', 'namespace', 'package-name', 'dir', 'gen-routing') as $option) {
+        foreach (array('module-type', 'module-display-name', 'vendor-name', 'module-name', 'author-name', 'package-license', 'package-website', 'bundle-name', 'namespace', 'package-name', 'dir', 'gen-routing') as $option) {
             if (null === $input->getOption($option)) {
                 throw new \RuntimeException(sprintf('The "%s" option must be provided.', $option));
             }
@@ -99,6 +100,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
         $moduleType = Validators::validateModuleType($input->getOption('module-type'), false);
         //$moduleIdentifier = Validators::validateModuleIdentifier($input->getOption('module-id'), false);
         $moduleDescription = Validators::validateDescription($input->getOption('module-description'), false);
+        $moduleDisplayName = Validators::validateDisplayName($input->getOption('module-display-name'), false);
         $packageLicense = Validators::validatePackageLicense($input->getOption('package-license'), false);
         $packageWebsite = Validators::validatePackageWebsiteUrl($input->getOption('package-website'), false);
         $vendorName = Validators::validateVendorName($input->getOption('vendor-name'), false);
@@ -132,7 +134,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
         $generator->generate($namespace, $bundleName, $dir, $format, $structure);
         $output->writeln('Generating the bundle: <info>OK</info>');     
         
-        $generator->generateConf($namespace, $bundleName, $dir, $moduleType, $moduleName, $moduleNameSuffix, $moduleDescription, $packageLicense, $packageWebsite, $vendorName, $authorName, $authorEmail, $packageName, $operationOwnsLocation, $metricsForOperation, $channelsForActivity, $hooksForActivity, $routing);
+        $generator->generateConf($namespace, $bundleName, $dir, $moduleType, $moduleName, $moduleNameSuffix, $moduleDescription, $moduleDisplayName, $packageLicense, $packageWebsite, $vendorName, $authorName, $authorEmail, $packageName, $operationOwnsLocation, $metricsForOperation, $channelsForActivity, $hooksForActivity, $routing);
         $output->writeln('Generating the CampaignChain configuration files: <info>OK</info>');
                
         $errors = array();
@@ -272,6 +274,29 @@ class GenerateModuleCommand extends GenerateBundleCommand
           '<comment>' . $this->createModuleIdentifier($vendorName, $moduleName, $moduleNameSuffix) . '</comment>).',
           ''              
         ));
+
+        /** module display name **/
+        $moduleDisplayName = null;             
+        try {
+            $moduleDisplayName = $input->getOption('module-display-name') ? Validators::validateDisplayName($input->getOption('module-display-name')) : null;
+        } catch (\Exception $error) {
+            $output->writeln($questionHelper->getHelperSet()->get('formatter')->formatBlock($error->getMessage(), 'error'));
+        }        
+        if (null === $moduleDisplayName) {
+            $output->writeln(array(
+              '',
+              'The module display name is a human-readable label that will be shown', 
+              'in CampaignChain\'s graphical user interface',
+              '(like <comment>Update Twitter Status</comment>).',
+              ''              
+            ));
+            $question = new Question($questionHelper->getQuestion('Module display name', $moduleDisplayName), $moduleDisplayName);            
+            $question->setValidator(function ($answer) {
+                return Validators::validateDisplayName($answer, false);
+            });
+            $moduleDisplayName = $questionHelper->ask($input, $output, $question);
+            $input->setOption('module-display-name', $moduleDisplayName);
+        } 
         
         /** module description **/
         $moduleDescription = null;             
@@ -283,9 +308,8 @@ class GenerateModuleCommand extends GenerateBundleCommand
         if (null === $moduleDescription) {
             $output->writeln(array(
               '',
-              'The module description is a human-readable label that will be shown', 
-              'in CampaignChain\'s graphical user interface',
-              '(like <comment>Update Twitter Status</comment>).',
+              'The module description (optional) briefly explains the purpose of the module', 
+              '(like <comment>This module updates your Twitter status</comment>).',
               ''              
             ));
             $question = new Question($questionHelper->getQuestion('Module description', $moduleDescription), $moduleDescription);            

@@ -89,9 +89,17 @@ class Validators extends SensioValidators
         return $package;
     }
 
+    public static function validateDisplayName($name)
+    {
+        if(!preg_match("/^[a-zA-Z0-9.\-\_\s]+$/", $name)) {
+            throw new \InvalidArgumentException('The display name contains invalid characters.');
+        }
+        return $name;
+    }
+
     public static function validateDescription($description)
     {
-        if(!preg_match("/^[a-zA-Z0-9.\-\_\s]+$/", $description)) {
+        if(!preg_match("/^(?:[a-zA-Z0-9.\-\_\s]?)+$/", $description)) {
             throw new \InvalidArgumentException('The description contains invalid characters.');
         }
         return $description;

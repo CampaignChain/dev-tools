@@ -1,7 +1,10 @@
 
 modules:
     {{ vendor_name|lower }}-{{ module_name }}{{ module_name_suffix ? '-' ~ module_name_suffix : '' }}:
-        display_name: '{{ module_description }}'
+        display_name: {{ module_display_name }}
+{% if module_description|length > 0 %}
+        description: {{ module_description }}
+{% endif %}
 {% if module_type == 'activity' %}
         channels: 
 {% for channel in channels_for_activity %}
