@@ -233,7 +233,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
               '',
               'The minimum syntax of the module name is a single lowercase word,',
               'with additional optional words separated by hyphens, indicating the ',
-              'channel that the module relates to (like <comment>twitter</comment> or <comment>report-cta</comment>).',
+              'channel that the module relates to (like <comment>twitter</comment> or <comment>analytics-cta</comment>).',
               ''              
             ));
             $question = new Question($questionHelper->getQuestion('Module name', $moduleName), $moduleName);            

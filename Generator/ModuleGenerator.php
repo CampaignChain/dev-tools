@@ -81,7 +81,10 @@ class ModuleGenerator extends BundleGenerator
         }
         if (strtolower($moduleType) == 'channel') {
             $this->renderFile('controller/ChannelController.php.twig', $dir.'/Controller/' . $derivedClassName . 'Controller.php', $parameters);
-        }          
+        } 
+        if (strtolower($moduleType) == 'report') {
+            $this->renderFile('controller/ReportController.php.twig', $dir.'/Controller/' . $derivedClassName . 'Controller.php', $parameters);        
+        }        
         if ($routing == 'yes') {
             // overwrite the default routing.yml file created by the Symfony generator
             $this->renderFile('config/routing.yml.twig', $dir.'/Resources/config/routing.yml', $parameters);

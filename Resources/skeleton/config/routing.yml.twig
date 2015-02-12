@@ -25,3 +25,9 @@
   pattern: /activity/{{ module_name }}{{ module_name_suffix ? '/' ~ module_name_suffix : '' }}/create
   defaults: { _controller: {{ bundle_name }}:{{ class_name }}:create }
 {% endif %}
+{% if module_type == 'report' %}
+{{ vendor_name|lower }}_{{ module_type }}_{{ module_name|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|replace({'-':'_'}) : '' }}_index:
+  pattern: /activity/{{ module_name }}{{ module_name_suffix ? '/' ~ module_name_suffix : '' }}/index
+  defaults: { _controller: {{ bundle_name }}:{{ class_name }}:index }
+{% endif %}
+

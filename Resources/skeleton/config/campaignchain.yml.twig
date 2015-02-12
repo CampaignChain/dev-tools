@@ -23,6 +23,10 @@ modules:
         routes: 
             new: {{ vendor_name|lower }}_{{ module_type }}_{{ module_name|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|replace({'-':'_'}) : '' }}_create
 {% endif %}
+{% if module_type == 'report' %}
+        routes: 
+            index: {{ vendor_name|lower }}_{{ module_type }}_{{ module_name|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|replace({'-':'_'}) : '' }}_index
+{% endif %}
 {% if module_type == 'location' or module_type == 'activity' or module_type == 'channel' %}
         hooks:
 {% if hooks_for_activity|length > 0 %}
