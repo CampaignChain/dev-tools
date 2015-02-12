@@ -73,7 +73,7 @@ class ModuleGenerator extends BundleGenerator
             $this->renderFile('entity/Entity.php.twig', $dir.'/Entity/' . $derivedClassName . '.php', $parameters);
             $this->renderFile('views/fields.html.twig', $dir.'/Resources/views/Form/fields.html.twig', $parameters);        
             $this->renderFile('views/read.html.twig', $dir.'/Resources/views/read' . ((!empty($moduleNameSuffix)) ? '_' . strtolower(str_replace('-', '_', $moduleNameSuffix)) : '') . '.html.twig', $parameters);        
-            $this->renderFile('public/css/base.css.twig', $dir.'/Resources/public/css/' . strtolower($moduleName) . ((!empty($moduleNameSuffix)) ? '_' . strtolower(str_replace('-', '_', $moduleNameSuffix)) : '') . '.css', $parameters);        
+            $this->renderFile('public/css/base.css.twig', $dir.'/Resources/public/css/' . strtolower(str_replace('-', '_', $moduleName)) . ((!empty($moduleNameSuffix)) ? '_' . strtolower(str_replace('-', '_', $moduleNameSuffix)) : '') . '.css', $parameters);        
         }
         if (strtolower($moduleType) == 'activity') {
             $this->renderFile('controller/ActivityController.php.twig', $dir.'/Controller/' . $derivedClassName . 'Controller.php', $parameters);        

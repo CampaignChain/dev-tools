@@ -205,9 +205,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
                 '[vendorName]-[moduleName]-[moduleSuffix]. The next three questions will',
                 'ask for these inputs to generate the module identifier.',
                 '',
-                'Please provide the vendor name as per the composer.json specification.',
-                'This should be one lowercase word (like <comment>acme</comment>).',
-                'Find details at https://getcomposer.org/doc/04-schema.md#name.',
+                'Please provide the vendor name as a single word.',
                 ''
             ));
             $question = new Question($questionHelper->getQuestion('Vendor name', $vendorName), $vendorName);            
