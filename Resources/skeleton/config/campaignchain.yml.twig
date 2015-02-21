@@ -1,6 +1,6 @@
 
 modules:
-    {{ vendor_name|lower }}-{{ module_name }}{{ module_name_suffix ? '-' ~ module_name_suffix : '' }}:
+    {{ vendor_name|lower }}-{{ module_name|lower }}{{ module_name_suffix ? '-' ~ module_name_suffix|lower : '' }}:
         display_name: {{ module_display_name }}
 {% if module_description|length > 0 %}
         description: {{ module_description }}
@@ -13,19 +13,19 @@ modules:
 {% endif %}
 {% if module_type == 'activity' %}
         routes: 
-            new: {{ vendor_name|lower }}_{{ module_type }}_{{ module_name|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|replace({'-':'_'}) : '' }}_new
-            edit: {{ vendor_name|lower }}_{{ module_type }}_{{ module_name|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|replace({'-':'_'}) : '' }}_edit
-            edit_modal: {{ vendor_name|lower }}_{{ module_type }}_{{ module_name|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|replace({'-':'_'}) : '' }}_edit_modal
-            edit_api: {{ vendor_name|lower }}_{{ module_type }}_{{ module_name|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|replace({'-':'_'}) : '' }}_edit_api
-            read: {{ vendor_name|lower }}_{{ module_type }}_{{ module_name|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|replace({'-':'_'}) : '' }}_read
+            new: {{ vendor_name|lower }}_{{ module_type }}_{{ module_name|lower|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|lower|replace({'-':'_'}) : '' }}_new
+            edit: {{ vendor_name|lower }}_{{ module_type }}_{{ module_name|lower|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|lower|replace({'-':'_'}) : '' }}_edit
+            edit_modal: {{ vendor_name|lower }}_{{ module_type }}_{{ module_name|lower|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|lower|replace({'-':'_'}) : '' }}_edit_modal
+            edit_api: {{ vendor_name|lower }}_{{ module_type }}_{{ module_name|lower|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|lower|replace({'-':'_'}) : '' }}_edit_api
+            read: {{ vendor_name|lower }}_{{ module_type }}_{{ module_name|lower|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|lower|replace({'-':'_'}) : '' }}_read
 {% endif %}
 {% if module_type == 'channel' %}
         routes: 
-            new: {{ vendor_name|lower }}_{{ module_type }}_{{ module_name|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|replace({'-':'_'}) : '' }}_create
+            new: {{ vendor_name|lower }}_{{ module_type }}_{{ module_name|lower|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|lower|replace({'-':'_'}) : '' }}_create
 {% endif %}
 {% if module_type == 'report' %}
         routes: 
-            index: {{ vendor_name|lower }}_{{ module_type }}_{{ module_name|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|replace({'-':'_'}) : '' }}_index
+            index: {{ vendor_name|lower }}_{{ module_type }}_{{ module_name|lower|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|lower|replace({'-':'_'}) : '' }}_index
 {% endif %}
 {% if module_type == 'location' or module_type == 'activity' or module_type == 'channel' %}
         hooks:
@@ -37,7 +37,7 @@ modules:
 {% endif %}
 {% if module_type == 'operation' %}
         services: 
-            report: {{ vendor_name|lower }}.job.report.{{ module_name|replace({'-':'_'}) }}{{ module_name_suffix ? '.' ~ module_name_suffix|replace({'-':'_'}) : '' }}
+            report: {{ vendor_name|lower }}.job.report.{{ module_name|lower|replace({'-':'_'}) }}{{ module_name_suffix ? '.' ~ module_name_suffix|lower|replace({'-':'_'}) : '' }}
         params: 
             owns_location: {{ owns_location }}
 {% if metrics_for_operation|length > 0 %}

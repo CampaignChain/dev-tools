@@ -3,7 +3,7 @@
 
 {% block operation %}{% endverbatim %}
 
-    {{ '{%' }} stylesheets '@{{ vendor_name|lower }}_operation_{{ module_name|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|replace({'-':'_'}) : '' }}_css' {{ '%}' }}
+    {{ '{%' }} stylesheets '@{{ vendor_name|lower }}_operation_{{ module_name|lower|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|lower|replace({'-':'_'}) : '' }}_css' {{ '%}' }}
 {% verbatim %}    <link href="{{ asset_url }}" type="text/css" rel="stylesheet" />
     {% endstylesheets %}
 

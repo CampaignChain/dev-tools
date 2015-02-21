@@ -40,8 +40,8 @@ class Validators extends SensioValidators
     public static function validateModuleName($name)
     {
         // validate characters
-        if (!preg_match('/^(?:[a-z0-9_-]*-?)+$/', $name)) {
-            throw new \InvalidArgumentException('The module name contains invalid or upper-case characters.');
+        if (!preg_match('/^(?:[a-zA-Z0-9_-]*-?)+$/', $name)) {
+            throw new \InvalidArgumentException('The module name contains invalid characters.');
         }
         return $name;
     }
@@ -49,8 +49,8 @@ class Validators extends SensioValidators
     public static function validateModuleNameSuffix($suffix)
     {
         // validate characters
-        if (!preg_match('/^(?:[a-z0-9_-]*-?)+$/', $suffix)) {
-            throw new \InvalidArgumentException('The module name suffix contains invalid or upper-case characters.');
+        if (!preg_match('/^(?:[a-zA-Z0-9_-]*-?)+$/', $suffix)) {
+            throw new \InvalidArgumentException('The module name suffix contains invalid characters.');
         }
         return $suffix;
     }

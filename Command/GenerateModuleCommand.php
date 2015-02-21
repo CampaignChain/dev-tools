@@ -231,7 +231,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
         if (null === $moduleName) {
             $output->writeln(array(
               '',
-              'The minimum syntax of the module name is a single lowercase word,',
+              'The minimum syntax of the module name is a single word,',
               'with additional optional words separated by hyphens, indicating the ',
               'channel that the module relates to (like <comment>twitter</comment> or <comment>analytics-cta</comment>).',
               ''              
