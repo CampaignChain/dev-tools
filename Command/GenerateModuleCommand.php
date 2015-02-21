@@ -651,7 +651,10 @@ class GenerateModuleCommand extends GenerateBundleCommand
     {
         $messages = array(
           '- Edit the <comment>composer.json</comment> file and register any other classes',
-          '  or bundles that you need. Also add any other routes that you need there.',
+          '  or bundles that you need.',
+          '',
+          '- Edit the <comment>Resources/config/routing.yml</comment> file and add routes',
+          '  for your module.',
           '',
           '- Edit the <comment>Resources/config/config.yml</comment> file and set',
           '  global configuration options for your module.',
