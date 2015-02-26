@@ -17,7 +17,7 @@
   defaults: { _controller: {{ bundle_name }}:{{ class_name }}:editApi }
 
 {{ vendor_name|lower }}_{{ module_type }}_{{ module_name|lower|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|lower|replace({'-':'_'}) : '' }}_read:
-  pattern: /activity/{{ module_name|lower }}{{ module_name_suffix ? '/' ~ module_name_suffix|lower : '' }}/{id}/edit
+  pattern: /activity/{{ module_name|lower }}{{ module_name_suffix ? '/' ~ module_name_suffix|lower : '' }}/{id}
   defaults: { _controller: {{ bundle_name }}:{{ class_name }}:read }
 {% endif %}
 {% if module_type == 'channel' %}
