@@ -1,33 +1,35 @@
 # Please add the routes for your module here
 {% if module_type == 'activity' %}
 {{ vendor_name|lower }}_{{ module_type }}_{{ module_name|lower|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|lower|replace({'-':'_'}) : '' }}_new:
-  pattern: /activity/{{ module_name|lower }}{{ module_name_suffix ? '/' ~ module_name_suffix|lower : '' }}/new
-  defaults: { _controller: {{ bundle_name }}:{{ class_name }}:new }
+    pattern: /activity/{{ module_name|lower }}{{ module_name_suffix ? '/' ~ module_name_suffix|lower : '' }}/new
+    defaults: { _controller: {{ bundle_name }}:{{ class_name }}:new }
 
 {{ vendor_name|lower }}_{{ module_type }}_{{ module_name|lower|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|lower|replace({'-':'_'}) : '' }}_edit:
-  pattern: /activity/{{ module_name|lower }}{{ module_name_suffix ? '/' ~ module_name_suffix|lower : '' }}/{id}/edit
-  defaults: { _controller: {{ bundle_name }}:{{ class_name }}:edit }
+    pattern: /activity/{{ module_name|lower }}{{ module_name_suffix ? '/' ~ module_name_suffix|lower : '' }}/{id}/edit
+    defaults: { _controller: {{ bundle_name }}:{{ class_name }}:edit }
 
 {{ vendor_name|lower }}_{{ module_type }}_{{ module_name|lower|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|lower|replace({'-':'_'}) : '' }}_edit_modal:
-  pattern: /activity/{{ module_name|lower }}{{ module_name_suffix ? '/' ~ module_name_suffix|lower : '' }}/{id}/edit
-  defaults: { _controller: {{ bundle_name }}:{{ class_name }}:editModal }
+    pattern: /modal/activity/{{ module_name|lower }}{{ module_name_suffix ? '/' ~ module_name_suffix|lower : '' }}/{id}/edit
+    defaults: { _controller: {{ bundle_name }}:{{ class_name }}:editModal }
 
 {{ vendor_name|lower }}_{{ module_type }}_{{ module_name|lower|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|lower|replace({'-':'_'}) : '' }}_edit_api:
-  pattern: /activity/{{ module_name|lower }}{{ module_name_suffix ? '/' ~ module_name_suffix|lower : '' }}/byactivity/{id}/edit
-  defaults: { _controller: {{ bundle_name }}:{{ class_name }}:editApi }
+    pattern: /api/private/activity/{{ module_name|lower }}{{ module_name_suffix ? '/' ~ module_name_suffix|lower : '' }}/byactivity/{id}/edit
+    defaults: { _controller: {{ bundle_name }}:{{ class_name }}:editApi }
+    options:
+        expose: true
 
 {{ vendor_name|lower }}_{{ module_type }}_{{ module_name|lower|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|lower|replace({'-':'_'}) : '' }}_read:
-  pattern: /activity/{{ module_name|lower }}{{ module_name_suffix ? '/' ~ module_name_suffix|lower : '' }}/{id}
-  defaults: { _controller: {{ bundle_name }}:{{ class_name }}:read }
+    pattern: /activity/{{ module_name|lower }}{{ module_name_suffix ? '/' ~ module_name_suffix|lower : '' }}/{id}
+    defaults: { _controller: {{ bundle_name }}:{{ class_name }}:read }
 {% endif %}
 {% if module_type == 'channel' %}
 {{ vendor_name|lower }}_{{ module_type }}_{{ module_name|lower|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|lower|replace({'-':'_'}) : '' }}_create:
-  pattern: /channel/{{ module_name|lower }}{{ module_name_suffix ? '/' ~ module_name_suffix|lower : '' }}/create
-  defaults: { _controller: {{ bundle_name }}:{{ class_name }}:create }
+    pattern: /channel/{{ module_name|lower }}{{ module_name_suffix ? '/' ~ module_name_suffix|lower : '' }}/create
+    defaults: { _controller: {{ bundle_name }}:{{ class_name }}:create }
 {% endif %}
 {% if module_type == 'report' %}
 {{ vendor_name|lower }}_{{ module_type }}_{{ module_name|lower|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|lower|replace({'-':'_'}) : '' }}_index:
-  pattern: /report/{{ module_name|lower }}{{ module_name_suffix ? '/' ~ module_name_suffix|lower : '' }}/index
-  defaults: { _controller: {{ bundle_name }}:{{ class_name }}:index }
+    pattern: /report/{{ module_name|lower }}{{ module_name_suffix ? '/' ~ module_name_suffix|lower : '' }}/index
+    defaults: { _controller: {{ bundle_name }}:{{ class_name }}:index }
 {% endif %}
 
