@@ -1,50 +1,52 @@
 
 modules:
-    {{ vendor_name|lower }}-{{ module_name|lower }}{{ module_name_suffix ? '-' ~ module_name_suffix|lower : '' }}:
-        display_name: {{ module_display_name }}
-{% if module_description|length > 0 %}
-        description: {{ module_description }}
+{% for module in modules %}
+    {{ vendor_name|lower }}-{{ module.module_name|lower }}{{ module.module_name_suffix ? '-' ~ module.module_name_suffix|lower : '' }}:
+        display_name: {{ module.module_display_name }}
+{% if module.module_description|length > 0 %}
+        description: {{ module.module_description }}
 {% endif %}
 {% if module_type == 'activity' %}
         channels: 
-{% for channel in channels_for_activity %}
+{% for channel in module.channels_for_activity %}
             - {{ channel|trim }}
 {% endfor %}
 {% endif %}
 {% if module_type == 'activity' %}
         routes: 
-            new: {{ vendor_name|lower }}_{{ module_type }}_{{ module_name|lower|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|lower|replace({'-':'_'}) : '' }}_new
-            edit: {{ vendor_name|lower }}_{{ module_type }}_{{ module_name|lower|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|lower|replace({'-':'_'}) : '' }}_edit
-            edit_modal: {{ vendor_name|lower }}_{{ module_type }}_{{ module_name|lower|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|lower|replace({'-':'_'}) : '' }}_edit_modal
-            edit_api: {{ vendor_name|lower }}_{{ module_type }}_{{ module_name|lower|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|lower|replace({'-':'_'}) : '' }}_edit_api
-            read: {{ vendor_name|lower }}_{{ module_type }}_{{ module_name|lower|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|lower|replace({'-':'_'}) : '' }}_read
+            new: {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_new
+            edit: {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_edit
+            edit_modal: {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_edit_modal
+            edit_api: {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_edit_api
+            read: {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_read
 {% endif %}
 {% if module_type == 'channel' %}
         routes: 
-            new: {{ vendor_name|lower }}_{{ module_type }}_{{ module_name|lower|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|lower|replace({'-':'_'}) : '' }}_create
+            new: {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_create
 {% endif %}
 {% if module_type == 'report' %}
         routes: 
-            index: {{ vendor_name|lower }}_{{ module_type }}_{{ module_name|lower|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|lower|replace({'-':'_'}) : '' }}_index
+            index: {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_index
 {% endif %}
 {% if module_type == 'location' or module_type == 'activity' or module_type == 'channel' %}
         hooks:
-{% if hooks_for_activity|length > 0 %}
-{% for hook in hooks_for_activity %}
+{% if module.hooks_for_activity|length > 0 %}
+{% for hook in module.hooks_for_activity %}
             {{ hook|trim }}: true
 {% endfor %}
 {% endif %}
 {% endif %}
 {% if module_type == 'operation' %}
         services: 
-            report: {{ vendor_name|lower }}.job.report.{{ module_name|lower|replace({'-':'_'}) }}{{ module_name_suffix ? '.' ~ module_name_suffix|lower|replace({'-':'_'}) : '' }}
+            report: {{ vendor_name|lower }}.job.report.{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}
         params: 
-            owns_location: {{ owns_location }}
-{% if metrics_for_operation|length > 0 %}
+            owns_location: {{ module.operation_owns_location }}
+{% if module.metrics_for_operation|length > 0 %}
         metrics:
             activity:
-{% for metric in metrics_for_operation %}
+{% for metric in module.metrics_for_operation %}
                 - "{{ metric|trim|capitalize }}"
 {% endfor %}
 {% endif %}
 {% endif %}
+{% endfor %}

@@ -30,7 +30,7 @@ class ModuleGenerator extends BundleGenerator
         return parent::generate($namespace, $bundleName, $dir, $format, $structure);
     }
     
-    public function generateConf($namespace, $bundleName, $dir, $moduleType, $moduleName, $moduleNameSuffix,  $moduleDescription, $moduleDisplayName, $packageLicense, $packageWebsite, $vendorName, $authorName, $authorEmail, $packageName, $operationOwnsLocation, $metricsForOperation, $channelsForActivity, $hooksForActivity, $routing)
+    public function generateConf($namespace, $bundleName, $dir, $moduleType, $modules, $packageLicense, $packageWebsite, $packageDescription, $vendorName, $authorName, $authorEmail, $packageName, $routing)
     {
     
         $dir .= '/'.strtr($namespace, '\\', '/');
@@ -40,51 +40,45 @@ class ModuleGenerator extends BundleGenerator
             'namespace' => $namespace,
             'bundle_name'  => $bundleName,
             'module_type' => $moduleType, 
-            'module_name' => $moduleName, 
-            'module_name_suffix' => $moduleNameSuffix, 
-            'module_description' => $moduleDescription, 
-            'module_display_name' => $moduleDisplayName, 
+            'modules' => $modules,
             'package_license' => $packageLicense, 
             'package_website' => $packageWebsite, 
             'vendor_name' => $vendorName, 
             'author_name' => $authorName, 
             'author_email' => $authorEmail,
             'package_name' => $packageName, 
-            'package_description' => $moduleDescription,
-            'owns_location' => $operationOwnsLocation,
-            'channels_for_activity' => explode(',', $channelsForActivity), 
-            'hooks_for_activity' => !empty($hooksForActivity) ? explode(',', $hooksForActivity) : null, 
-            'metrics_for_operation' => !empty($metricsForOperation) ? explode(',', $metricsForOperation) : null, 
+            'package_description' => $packageDescription,
             'gen_routing' => $routing
         );
         
         if ($routing == 'yes') {
             $parameters['route_prefix'] = str_replace(array('/', '-'), '_', $packageName);
         }
-        
-        $derivedClassName = implode('', array_map('ucwords', explode('-', $moduleName . '-' . $moduleNameSuffix)));
-        $parameters['class_name'] = $derivedClassName;
+
+        foreach ($modules as $module) {        
+            $derivedClassName = $module['class_name'];
+            if (strtolower($moduleType) == 'operation') {
+                $this->renderFile('job/Report.php.twig', $dir.'/Job/' . $derivedClassName . 'Report.php', array_merge($parameters, $module));        
+                $this->renderFile('form/OperationType.php.twig', $dir.'/Form/Type/' . $derivedClassName . 'OperationType.php', array_merge($parameters, $module));        
+                $this->renderFile('entity/Entity.php.twig', $dir.'/Entity/' . $derivedClassName . '.php', array_merge($parameters, $module));
+                $this->renderFile('views/fields.html.twig', $dir.'/Resources/views/Form/fields.html.twig', array_merge($parameters, $module));        
+                $this->renderFile('views/read.html.twig', $dir.'/Resources/views/read' . ((!empty($module['module_name_suffix'])) ? '_' . strtolower(str_replace('-', '_', $module['module_name_suffix'])) : '') . '.html.twig', array_merge($parameters, $module));        
+                $this->renderFile('public/css/base.css.twig', $dir.'/Resources/public/css/' . strtolower(str_replace('-', '_', $module['module_name'])) . ((!empty($module['module_name_suffix'])) ? '_' . strtolower(str_replace('-', '_', $module['module_name_suffix'])) : '') . '.css', array_merge($parameters, $module));        
+            }
+            if (strtolower($moduleType) == 'activity') {
+                $this->renderFile('controller/ActivityController.php.twig', $dir.'/Controller/' . $derivedClassName . 'Controller.php', array_merge($parameters, $module));        
+            }
+            if (strtolower($moduleType) == 'channel') {
+                $this->renderFile('controller/ChannelController.php.twig', $dir.'/Controller/' . $derivedClassName . 'Controller.php', array_merge($parameters, $module));
+            } 
+            if (strtolower($moduleType) == 'report') {
+                $this->renderFile('controller/ReportController.php.twig', $dir.'/Controller/' . $derivedClassName . 'Controller.php', array_merge($parameters, $module));
+            }                
+        }
         
         $this->renderFile('config/campaignchain.yml.twig', $dir.'/campaignchain.yml', $parameters);
         $this->renderFile('config/composer.json.twig', $dir.'/composer.json', $parameters);
         $this->renderFile('config/config.yml.twig', $dir.'/Resources/config/config.yml', $parameters);
-        if (strtolower($moduleType) == 'operation') {
-            $this->renderFile('job/Report.php.twig', $dir.'/Job/' . $derivedClassName . 'Report.php', $parameters);        
-            $this->renderFile('form/OperationType.php.twig', $dir.'/Form/Type/' . $derivedClassName . 'OperationType.php', $parameters);        
-            $this->renderFile('entity/Entity.php.twig', $dir.'/Entity/' . $derivedClassName . '.php', $parameters);
-            $this->renderFile('views/fields.html.twig', $dir.'/Resources/views/Form/fields.html.twig', $parameters);        
-            $this->renderFile('views/read.html.twig', $dir.'/Resources/views/read' . ((!empty($moduleNameSuffix)) ? '_' . strtolower(str_replace('-', '_', $moduleNameSuffix)) : '') . '.html.twig', $parameters);        
-            $this->renderFile('public/css/base.css.twig', $dir.'/Resources/public/css/' . strtolower(str_replace('-', '_', $moduleName)) . ((!empty($moduleNameSuffix)) ? '_' . strtolower(str_replace('-', '_', $moduleNameSuffix)) : '') . '.css', $parameters);        
-        }
-        if (strtolower($moduleType) == 'activity') {
-            $this->renderFile('controller/ActivityController.php.twig', $dir.'/Controller/' . $derivedClassName . 'Controller.php', $parameters);        
-        }
-        if (strtolower($moduleType) == 'channel') {
-            $this->renderFile('controller/ChannelController.php.twig', $dir.'/Controller/' . $derivedClassName . 'Controller.php', $parameters);
-        } 
-        if (strtolower($moduleType) == 'report') {
-            $this->renderFile('controller/ReportController.php.twig', $dir.'/Controller/' . $derivedClassName . 'Controller.php', $parameters);        
-        }        
         if ($routing == 'yes') {
             // overwrite the default routing.yml file created by the Symfony generator
             $this->renderFile('config/routing.yml.twig', $dir.'/Resources/config/routing.yml', $parameters);

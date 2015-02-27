@@ -47,27 +47,21 @@ class GenerateModuleCommand extends GenerateBundleCommand
         $this
             ->setDefinition(array(
               new InputOption('module-type', '', InputOption::VALUE_REQUIRED, 'The module type'),
-              new InputOption('module-description', '', InputOption::VALUE_OPTIONAL, 'The module description'),
-              new InputOption('module-display-name', '', InputOption::VALUE_REQUIRED, 'The module display name'),
               new InputOption('vendor-name', '', InputOption::VALUE_REQUIRED, 'The vendor name'),
-              new InputOption('module-name', '', InputOption::VALUE_REQUIRED, 'The module name)'),
-              new InputOption('module-name-suffix', '', InputOption::VALUE_OPTIONAL, 'The module name (suffix)'),
               new InputOption('author-name', '', InputOption::VALUE_REQUIRED, 'The author name'),
               new InputOption('author-email', '', InputOption::VALUE_OPTIONAL, 'The author email address'),
               new InputOption('package-license', '', InputOption::VALUE_REQUIRED, 'The package license'),
               new InputOption('package-website', '', InputOption::VALUE_REQUIRED, 'The package website URL'),
+              new InputOption('package-description', '', InputOption::VALUE_OPTIONAL, 'The package description'),
               new InputOption('namespace', '', InputOption::VALUE_REQUIRED, 'The bundle namespace'),
               new InputOption('bundle-name', '', InputOption::VALUE_REQUIRED, 'The bundle name'),
               new InputOption('package-name', '', InputOption::VALUE_REQUIRED, 'The Composer package name'),
-              new InputOption('operation-owns-location', '', InputOption::VALUE_OPTIONAL, 'The \'owns_location\' parameter (for Operation modules only)'),
-              new InputOption('channels-for-activity', '', InputOption::VALUE_OPTIONAL, 'The \'channels\' parameter (for Activity modules only)'),
-              new InputOption('hooks-for-activity', '', InputOption::VALUE_OPTIONAL, 'The \'hooks\' parameter (for Activity modules only)'),
-              new InputOption('metrics-for-operation', '', InputOption::VALUE_OPTIONAL, 'The \'metrics\' parameter (for Operation modules only)'),
               new InputOption('dir', '', InputOption::VALUE_REQUIRED, 'The bundle directory'),
-              new InputOption('gen-routing', '', InputOption::VALUE_REQUIRED, 'Whether to generate a routing.yml file')
-              ))
+              new InputOption('gen-routing', '', InputOption::VALUE_REQUIRED, 'Whether to generate a routing.yml file'),
+              new InputOption('modules', '', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'The modules to be added'),
+              new InputOption('more-modules', '', InputOption::VALUE_REQUIRED, 'Whether to add more modules (non-interactive mode only)')))
             ->setName('campaignchain:generate:module')
-            ->setDescription('Generates a new CampaignChain module skeleton as a bundle');
+            ->setDescription('Generates new CampaignChain module skeletons as a bundle');
         
     }
 
@@ -83,7 +77,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
             }
         }
 
-        foreach (array('module-type', 'module-display-name', 'vendor-name', 'module-name', 'author-name', 'package-license', 'package-website', 'bundle-name', 'namespace', 'package-name', 'dir', 'gen-routing') as $option) {
+        foreach (array('module-type', 'vendor-name', 'modules', 'author-name', 'package-license', 'package-website', 'bundle-name', 'namespace', 'package-name', 'dir', 'gen-routing') as $option) {
             if (null === $input->getOption($option)) {
                 throw new \RuntimeException(sprintf('The "%s" option must be provided.', $option));
             }
@@ -98,30 +92,15 @@ class GenerateModuleCommand extends GenerateBundleCommand
         $format = 'yml';
         $structure = 'yes';
         $moduleType = Validators::validateModuleType($input->getOption('module-type'), false);
-        //$moduleIdentifier = Validators::validateModuleIdentifier($input->getOption('module-id'), false);
-        $moduleDescription = Validators::validateDescription($input->getOption('module-description'), false);
-        $moduleDisplayName = Validators::validateDisplayName($input->getOption('module-display-name'), false);
-        $packageLicense = Validators::validatePackageLicense($input->getOption('package-license'), false);
-        $packageWebsite = Validators::validatePackageWebsiteUrl($input->getOption('package-website'), false);
         $vendorName = Validators::validateVendorName($input->getOption('vendor-name'), false);
-        $moduleName = Validators::validateModuleName($input->getOption('module-name'), false);
-        $moduleNameSuffix = Validators::validateModuleNameSuffix($input->getOption('module-name-suffix'), false);
         $authorName = Validators::validateAuthorName($input->getOption('author-name'), false);
         $authorEmail = Validators::validateAuthorEmail($input->getOption('author-email'), false);
+        $packageLicense = Validators::validatePackageLicense($input->getOption('package-license'), false);
+        $packageWebsite = Validators::validatePackageWebsiteUrl($input->getOption('package-website'), false);
+        $packageDescription = Validators::validateDescription($input->getOption('package-description'), false);
         $packageName = Validators::validatePackageName($input->getOption('package-name'), false);
         $routing = Validators::validateBooleanAnswer($input->getOption('gen-routing'), false);
-        $operationOwnsLocation = null;
-        $metricsForOperation = null;
-        if ($moduleType == 'operation') {
-            $operationOwnsLocation = Validators::validateOperationOwnsLocation($input->getOption('operation-owns-location'), false);
-            $metricsForOperation = Validators::validateMetricsForOperation($input->getOption('metrics-for-operation'), false);
-        }
-        $channelsForActivity = null;
-        $hooksForActivity = null;
-        if ($moduleType == 'activity') {
-            $channelsForActivity = Validators::validateChannelsForActivity($input->getOption('channels-for-activity'), false);
-            $hooksForActivity = Validators::validateHooksForActivity($input->getOption('hooks-for-activity'), false);
-        }
+        $modules = $this->parseModules($input->getOption('modules'), $moduleType);
         
         $questionHelper->writeSection($output, 'Bundle generation');
 
@@ -134,7 +113,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
         $generator->generate($namespace, $bundleName, $dir, $format, $structure);
         $output->writeln('Generating the bundle: <info>OK</info>');     
         
-        $generator->generateConf($namespace, $bundleName, $dir, $moduleType, $moduleName, $moduleNameSuffix, $moduleDescription, $moduleDisplayName, $packageLicense, $packageWebsite, $vendorName, $authorName, $authorEmail, $packageName, $operationOwnsLocation, $metricsForOperation, $channelsForActivity, $hooksForActivity, $routing);
+        $generator->generateConf($namespace, $bundleName, $dir, $moduleType, $modules, $packageLicense, $packageWebsite, $packageDescription, $vendorName, $authorName, $authorEmail, $packageName, $routing);
         $output->writeln('Generating the CampaignChain configuration files: <info>OK</info>');
                
         $errors = array();
@@ -219,215 +198,11 @@ class GenerateModuleCommand extends GenerateBundleCommand
         } 
 
         $derivedVendorName = preg_replace('/\s+/', '', $vendorName);
-           
-        
-        /** module name **/
-        $moduleName = null;             
-        try {
-            $moduleName = $input->getOption('module-name') ? Validators::validateModuleName($input->getOption('module-name')) : null;
-        } catch (\Exception $error) {
-            $output->writeln($questionHelper->getHelperSet()->get('formatter')->formatBlock($error->getMessage(), 'error'));
-        }        
-        if (null === $moduleName) {
-            $output->writeln(array(
-              '',
-              'The minimum syntax of the module name is a single word,',
-              'with additional optional words separated by hyphens, indicating the ',
-              'channel that the module relates to (like <comment>twitter</comment> or <comment>analytics-cta</comment>).',
-              ''              
-            ));
-            $question = new Question($questionHelper->getQuestion('Module name', $moduleName), $moduleName);            
-            $question->setValidator(function ($answer) {
-                return Validators::validateModuleName($answer, false);
-            });
-            $moduleName = $questionHelper->ask($input, $output, $question);
-            $input->setOption('module-name', $moduleName);
-        }  
-        $derivedModuleName = implode('', array_map('ucwords', explode('-', $moduleName)));
+            
+        // modules
+        $input->setOption('modules', $this->addModules($input, $output, $questionHelper, $moduleType, $vendorName));
+        $modules = $input->getOption('modules');
 
-        /** module name suffix **/
-        $moduleNameSuffix = null;             
-        try {
-            $moduleNameSuffix = $input->getOption('module-name-suffix') ? Validators::validateModuleNameSuffix($input->getOption('module-name-suffix')) : null;
-        } catch (\Exception $error) {
-            $output->writeln($questionHelper->getHelperSet()->get('formatter')->formatBlock($error->getMessage(), 'error'));
-        }        
-        if (null === $moduleNameSuffix) {
-            $output->writeln(array(
-              '',
-              'To further describe your module, add an optional suffix.',
-              'The recommended syntax of the module suffix is to use hyphens (-)',
-              'to separate words (like <comment>update-status</comment>).',
-              ''              
-            ));
-            $question = new Question($questionHelper->getQuestion('Module name suffix', $moduleNameSuffix), $moduleNameSuffix);            
-            $question->setValidator(function ($answer) {
-                return Validators::validateModuleNameSuffix($answer, false);
-            });
-            $moduleNameSuffix = $questionHelper->ask($input, $output, $question);
-            $input->setOption('module-name-suffix', $moduleNameSuffix);
-        }  
-        
-        $output->writeln(array(
-          '',
-          'Based on your inputs, the module identifier for your module will be.',
-          '<comment>' . $this->createModuleIdentifier($vendorName, $moduleName, $moduleNameSuffix) . '</comment>).',
-          ''              
-        ));
-
-        /** module display name **/
-        $moduleDisplayName = null;             
-        try {
-            $moduleDisplayName = $input->getOption('module-display-name') ? Validators::validateDisplayName($input->getOption('module-display-name')) : null;
-        } catch (\Exception $error) {
-            $output->writeln($questionHelper->getHelperSet()->get('formatter')->formatBlock($error->getMessage(), 'error'));
-        }        
-        if (null === $moduleDisplayName) {
-            $output->writeln(array(
-              '',
-              'The module display name is a human-readable label that will be shown', 
-              'in CampaignChain\'s graphical user interface',
-              '(like <comment>Update Twitter Status</comment>).',
-              ''              
-            ));
-            $question = new Question($questionHelper->getQuestion('Module display name', $moduleDisplayName), $moduleDisplayName);            
-            $question->setValidator(function ($answer) {
-                return Validators::validateDisplayName($answer, false);
-            });
-            $moduleDisplayName = $questionHelper->ask($input, $output, $question);
-            $input->setOption('module-display-name', $moduleDisplayName);
-        } 
-        
-        /** module description **/
-        $moduleDescription = null;             
-        try {
-            $moduleDescription = $input->getOption('module-description') ? Validators::validateDescription($input->getOption('module-description')) : null;
-        } catch (\Exception $error) {
-            $output->writeln($questionHelper->getHelperSet()->get('formatter')->formatBlock($error->getMessage(), 'error'));
-        }        
-        if (null === $moduleDescription) {
-            $output->writeln(array(
-              '',
-              'The module description (optional) briefly explains the purpose of the module', 
-              '(like <comment>This module updates your Twitter status</comment>).',
-              ''              
-            ));
-            $question = new Question($questionHelper->getQuestion('Module description', $moduleDescription), $moduleDescription);            
-            $question->setValidator(function ($answer) {
-                return Validators::validateDescription($answer, false);
-            });
-            $moduleDescription = $questionHelper->ask($input, $output, $question);
-            $input->setOption('module-description', $moduleDescription);
-        }  
-        
-        /** owns_location value **/
-        if ($moduleType == 'operation') {
-            $operationOwnsLocation = null;             
-            try {
-                $moduleDescription = $input->getOption('operation-owns-location') ? Validators::validateOperationOwnsLocation($input->getOption('operation-owns-location')) : null;
-            } catch (\Exception $error) {
-                $output->writeln($questionHelper->getHelperSet()->get('formatter')->formatBlock($error->getMessage(), 'error'));
-            }        
-            if (null ===$operationOwnsLocation) {
-                $output->writeln(array(
-                  '',
-                  'For Operation modules only, specify whether the operation owns its location.',
-                  'State <comment>true</comment> or <comment>false</comment>.',
-                  'For example, choose <comment>true</comment> if the operation creates a location, such as when posting on Twitter.',
-                  ''
-                ));
-                $question = new Question($questionHelper->getQuestion('Does the operation own its location?', 'true'), 'true');            
-                $question->setValidator(function ($answer) {
-                    return Validators::validateOperationOwnsLocation($answer, false);
-                });
-                $operationOwnsLocation = $questionHelper->ask($input, $output, $question);
-                $input->setOption('operation-owns-location', $operationOwnsLocation);
-            }  
-        }
-
-        /* metrics value */
-        if ($moduleType == 'operation') {
-            $metricsForOperation = null;             
-            try {
-                $moduleDescription = $input->getOption('metrics-for-operation') ? Validators::validateMetricsForOperation($input->getOption('metrics-for-operation')) : null;
-            } catch (\Exception $error) {
-                $output->writeln($questionHelper->getHelperSet()->get('formatter')->formatBlock($error->getMessage(), 'error'));
-            }        
-            if (null === $metricsForOperation) {
-                $output->writeln(array(
-                  '',
-                  'For Operation modules only, specify the metrics for the operation',
-                  '(like <comment>Clicks</comment> or <comment>Clicks, Likes, Shares</comment>).',
-                  '',
-                  'List the metrics as a comma-separated list.', 
-                  ''              
-                ));
-                $question = new Question($questionHelper->getQuestion('Metrics for the operation', $metricsForOperation), $metricsForOperation);            
-                $question->setValidator(function ($answer) {
-                    return Validators::validateMetricsForOperation($answer, false);
-                });
-                $metricsForOperation = $questionHelper->ask($input, $output, $question);
-                $input->setOption('metrics-for-operation', $metricsForOperation);
-            }  
-        }          
-        
-        /* channels value */
-        if ($moduleType == 'activity') {
-            $channelsForActivity = null;             
-            try {
-                $moduleDescription = $input->getOption('channels-for-activity') ? Validators::validateChannelsForActivity($input->getOption('channels-for-activity')) : null;
-            } catch (\Exception $error) {
-                $output->writeln($questionHelper->getHelperSet()->get('formatter')->formatBlock($error->getMessage(), 'error'));
-            }        
-            if (null === $channelsForActivity) {
-                $output->writeln(array(
-                  '',
-                  'For Activity modules only, specify the channels for the activity.',
-                  '',
-                  'The format for each channel module name is', 
-                  '<comment>vendor/channel-[module-name]/[module-id]</comment>', 
-                  '(like <comment>acme/channel-twitter/acme-twitter</comment>).',
-                  '',
-                  'List the channels as a comma-separated list.', 
-                  ''              
-                ));
-                $question = new Question($questionHelper->getQuestion('Channels for the activity', $channelsForActivity), $channelsForActivity);            
-                $question->setValidator(function ($answer) {
-                    return Validators::validateChannelsForActivity($answer, false);
-                });
-                $channelsForActivity = $questionHelper->ask($input, $output, $question);
-                $input->setOption('channels-for-activity', $channelsForActivity);
-            }  
-        }        
-
-        /* hooks value */
-        if ($moduleType == 'activity') {
-            $hooksForActivity = null;             
-            try {
-                $moduleDescription = $input->getOption('hooks-for-activity') ? Validators::validateHooksForActivity($input->getOption('hooks-for-activity')) : null;
-            } catch (\Exception $error) {
-                $output->writeln($questionHelper->getHelperSet()->get('formatter')->formatBlock($error->getMessage(), 'error'));
-            }        
-            if (null === $hooksForActivity) {
-                $output->writeln(array(
-                  '',
-                  'For Activity modules only, specify the hooks for the activity.',
-                  '',
-                  'The format for each hook name is <comment>[module-name]</comment>', 
-                  '(like <comment>campaignchain-assignee</comment>).',
-                  '',
-                  'List the hooks as a comma-separated list.', 
-                  ''              
-                ));
-                $question = new Question($questionHelper->getQuestion('Hooks for the activity', $hooksForActivity), $hooksForActivity);            
-                $question->setValidator(function ($answer) {
-                    return Validators::validateHooksForActivity($answer, false);
-                });
-                $hooksForActivity = $questionHelper->ask($input, $output, $question);
-                $input->setOption('hooks-for-activity', $hooksForActivity);
-            }  
-        }  
-        
         /** author name **/
         $authorName = null;             
         try {
@@ -490,6 +265,29 @@ class GenerateModuleCommand extends GenerateBundleCommand
             $packageLicense = $questionHelper->ask($input, $output, $question);
             $input->setOption('package-license', $packageLicense);
         }  
+
+
+        /** package description **/
+        $packageDescription = null;             
+        try {
+            $packageDescription = $input->getOption('package-description') ? Validators::validateDescription($input->getOption('package-description')) : null;
+        } catch (\Exception $error) {
+            $output->writeln($questionHelper->getHelperSet()->get('formatter')->formatBlock($error->getMessage(), 'error'));
+        }        
+        if (null === $packageDescription) {
+            $output->writeln(array(
+                '',
+                'The package description (optional) briefly explains the purpose of the package', 
+                '(like <comment>Collection of Twitter-related modules</comment>).',
+                '',
+            ));            
+            $question = new Question($questionHelper->getQuestion('Package description', $packageDescription), $packageDescription);            
+            $question->setValidator(function ($answer) {
+                return Validators::validateDescription($answer, false);
+            });
+            $packageDescription = $questionHelper->ask($input, $output, $question);
+            $input->setOption('package-description', $packageDescription);
+        }  
         
         /** package website **/
         $packageWebsite = null;             
@@ -519,13 +317,15 @@ class GenerateModuleCommand extends GenerateBundleCommand
         } catch (\Exception $error) {
             $output->writeln($questionHelper->getHelperSet()->get('formatter')->formatBlock($error->getMessage(), 'error'));
         }
-
+        
+        $derivedModuleName = implode('', array_map('ucwords', explode('-', $modules[0]['module_name'])));
         $recommendedNamespace = ucfirst($derivedVendorName) . '/' . ucfirst($moduleType) . '/' . $derivedModuleName . 'Bundle';
         if (null === $namespace) {
             $output->writeln(array(
                 '',
                 'Each bundle is hosted under a namespace'. 
                 '(like <comment>Acme/CampaignChain/Channel/FacebookBundle</comment>).',
+                '',
                 'The namespace should begin with a "vendor" name like your company name',
                 ' and it should end with the bundle name itself (which must have',
                 '<comment>Bundle</comment> as a suffix).',
@@ -578,7 +378,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
         } catch (\Exception $error) {
             $output->writeln($questionHelper->getHelperSet()->get('formatter')->formatBlock($error->getMessage(), 'error'));
         }        
-        $recommendedPackageName = strtolower($derivedVendorName) . '/' . strtolower($moduleType) . '-' . strtolower($moduleName);        
+        $recommendedPackageName = strtolower($derivedVendorName) . '/' . strtolower($moduleType) . '-' . strtolower($modules[0]['module_name']);        
 
         if (null === $packageName) {        
             $output->writeln(array(
@@ -684,6 +484,255 @@ class GenerateModuleCommand extends GenerateBundleCommand
         }
         return $messages;
     }
+    
+    public function addModules(InputInterface $input, OutputInterface $output, QuestionHelper $questionHelper, $moduleType, $vendorName)
+    {
+        $modules = $this->parseModules($input->getOption('modules'), $moduleType);
+        
+        if (is_null($input->getOption('more-modules'))) {
+            $input->setOption('more-modules', 'yes');
+        }
+        while ($input->getOption('more-modules') == 'yes') {
+            /** module name **/
+            if (count($modules) == 0) {
+              $moduleName = null;
+              $output->writeln(array(
+                '',
+                'The minimum syntax of the module name is a single word,',
+                'with additional optional words separated by hyphens, indicating the ',
+                'channel that the module relates to (like <comment>twitter</comment> or <comment>analytics-cta</comment>).',
+                '',    
+                'The first module name entered will also be used to generate',
+                'the default bundle and package name. You will have the opportunity to',
+                'change this later.',
+                ''              
+              ));
+              $question = new Question($questionHelper->getQuestion('Module name', $moduleName), $moduleName);            
+              $question->setValidator(function ($answer) {
+                  return Validators::validateModuleName($answer, false);
+              });
+              $moduleName = $questionHelper->ask($input, $output, $question);
+              if (!$moduleName) {
+                  $output->writeln(array(
+                    '<comment>You must define at least one module.</comment>',
+                  ));
+                  continue;
+              }
+            } else {
+                $moduleName = $modules[0]['module_name'];                 
+            }
+            
+            /** module name suffix **/
+            $moduleNameSuffix = null;             
+            $output->writeln(array(
+              '',
+              'To further describe your module, add an optional suffix.',
+              'The recommended syntax of the module suffix is to use hyphens (-)',
+              'to separate words (like <comment>update-status</comment>).',
+              ''              
+            ));
+            $question = new Question($questionHelper->getQuestion('Module name suffix', $moduleNameSuffix), $moduleNameSuffix);            
+            if (count($modules) == 0) {
+                $question->setValidator(function ($answer) {
+                    return Validators::validateModuleNameSuffix($answer, false);
+                });                        
+            } else {
+                $question->setValidator(function ($answer) use ($modules) {
+                    return Validators::validateModuleNameSuffix($answer, $modules, true, false);
+                });            
+            }
+
+            $moduleNameSuffix = $questionHelper->ask($input, $output, $question);
+            
+            $output->writeln(array(
+              '',
+              'Based on your inputs, the module identifier for your module will be.',
+              '<comment>' . $this->createModuleIdentifier($vendorName, $moduleName, $moduleNameSuffix) . '</comment>).',
+              ''              
+            ));
+
+            /** module display name **/
+            $moduleDisplayName = null;             
+            $output->writeln(array(
+              '',
+              'The module display name is a human-readable label that will be shown', 
+              'in CampaignChain\'s graphical user interface',
+              '(like <comment>Update Twitter Status</comment>).',
+              ''              
+            ));
+            $question = new Question($questionHelper->getQuestion('Module display name', $moduleDisplayName), $moduleDisplayName);            
+            $question->setValidator(function ($answer) {
+                return Validators::validateDisplayName($answer, false);
+            });
+            $moduleDisplayName = $questionHelper->ask($input, $output, $question);
+        
+            /** module description **/
+            $moduleDescription = null;             
+            $output->writeln(array(
+              '',
+              'The module description (optional) briefly explains the purpose of the module', 
+              '(like <comment>This module updates your Twitter status</comment>).',
+              ''              
+            ));
+            $question = new Question($questionHelper->getQuestion('Module description', $moduleDescription), $moduleDescription);            
+            $question->setValidator(function ($answer) {
+                return Validators::validateDescription($answer, false);
+            });
+            $moduleDescription = $questionHelper->ask($input, $output, $question);
+            
+            /** owns_location value **/
+            $operationOwnsLocation = null;             
+            if ($moduleType == 'operation') {
+                $output->writeln(array(
+                  '',
+                  'For Operation modules only, specify whether the operation owns its location.',
+                  'State <comment>true</comment> or <comment>false</comment>.',
+                  'For example, choose <comment>true</comment> if the operation creates a location, such as when posting on Twitter.',
+                  ''
+                ));
+                $question = new Question($questionHelper->getQuestion('Does the operation own its location?', 'true'), 'true');            
+                $question->setValidator(function ($answer) {
+                    return Validators::validateOperationOwnsLocation($answer, false);
+                });
+                $operationOwnsLocation = $questionHelper->ask($input, $output, $question);
+            }
+
+            /* metrics value */
+            $metricsForOperation = null;             
+            if ($moduleType == 'operation') {
+                $output->writeln(array(
+                  '',
+                  'For Operation modules only, specify the metrics for the operation',
+                  '(like <comment>Clicks</comment> or <comment>Clicks, Likes, Shares</comment>).',
+                  '',
+                  'List the metrics as a comma-separated list.', 
+                  ''              
+                ));
+                $question = new Question($questionHelper->getQuestion('Metrics for the operation', $metricsForOperation), $metricsForOperation);            
+                $question->setValidator(function ($answer) {
+                    return Validators::validateMetricsForOperation($answer, false);
+                });
+                $metricsForOperation = $questionHelper->ask($input, $output, $question);
+            }  
+        
+            /* channels value */
+            $channelsForActivity = null;             
+            if ($moduleType == 'activity') {
+                $output->writeln(array(
+                  '',
+                  'For Activity modules only, specify the channels for the activity.',
+                  '',
+                  'The format for each channel module name is', 
+                  '<comment>vendor/channel-[module-name]/[module-id]</comment>', 
+                  '(like <comment>acme/channel-twitter/acme-twitter</comment>).',
+                  '',
+                  'List the channels as a comma-separated list.', 
+                  ''              
+                ));
+                $question = new Question($questionHelper->getQuestion('Channels for the activity', $channelsForActivity), $channelsForActivity);            
+                $question->setValidator(function ($answer) {
+                    return Validators::validateChannelsForActivity($answer, false);
+                });
+                $channelsForActivity = $questionHelper->ask($input, $output, $question);
+            }  
+
+            /* hooks value */
+            $hooksForActivity = null;                        
+            if ($moduleType == 'activity') {
+                $output->writeln(array(
+                  '',
+                  'For Activity modules only, specify the hooks for the activity.',
+                  '',
+                  'The format for each hook name is <comment>[module-name]</comment>', 
+                  '(like <comment>campaignchain-assignee</comment>).',
+                  '',
+                  'List the hooks as a comma-separated list.', 
+                  ''              
+                ));
+                $question = new Question($questionHelper->getQuestion('Hooks for the activity', $hooksForActivity), $hooksForActivity);            
+                $question->setValidator(function ($answer) {
+                    return Validators::validateHooksForActivity($answer, false);
+                });
+                $hooksForActivity = $questionHelper->ask($input, $output, $question);
+            }  
+            
+            $derivedClassName = implode('', array_map('ucwords', explode('-', $moduleName . '-' . $moduleNameSuffix)));
+            
+            $modules[] = array(
+                'module_name'             => $moduleName,
+                'module_name_suffix'      => $moduleNameSuffix,
+                'module_display_name'     => $moduleDisplayName,
+                'module_description'      => $moduleDescription,
+                'operation_owns_location' => $operationOwnsLocation,
+                'channels_for_activity'   => explode(',', $channelsForActivity), 
+                'hooks_for_activity'      => !empty($hooksForActivity) ? explode(',', $hooksForActivity) : null, 
+                'metrics_for_operation'   => !empty($metricsForOperation) ? explode(',', $metricsForOperation) : null,
+                'class_name'              => $derivedClassName
+            );
+            
+            $output->writeln(array(
+              '',
+            ));
+            $question = new Question($questionHelper->getQuestion('Add another module?', 'no'), 'no');            
+            $question->setValidator(function ($answer) {
+                return Validators::validateBooleanAnswer($answer, false);
+            });
+            $anotherModule = $questionHelper->ask($input, $output, $question);
+            $input->setOption('more-modules', $anotherModule);
+            
+        }            
+        return $modules;
+        
+    }
+
+    public function parseModules($modules, $moduleType)
+    {
+        if (is_array($modules)) {
+            if (isset($modules[0]['module_name'])) {
+              return $modules;
+            }
+        }
+
+        $newModules = array();
+
+        foreach ($modules as $module) {
+            $data = explode(':', $module);
+
+            if (count($newModules) == 0) {
+                $moduleName = Validators::validateModuleName($data[0], false);
+                $moduleNameSuffix = Validators::validateModuleNameSuffix($data[1], false);
+            } else {
+                $moduleName = $newModules[0]['module_name'];
+                $moduleNameSuffix = Validators::validateModuleNameSuffix($data[1], $newModules, true, false);
+            }
+            $moduleDisplayName = Validators::validateDisplayName($data[2], false);
+            $moduleDescription = Validators::validateDescription($data[3], false);
+            $derivedClassName = implode('', array_map('ucwords', explode('-', $moduleName . '-' . $moduleNameSuffix)));
+            $operationOwnsLocation = null;
+            $channelsForActivity = null;
+            if ($moduleType == 'operation') {
+                $operationOwnsLocation = Validators::validateOperationOwnsLocation($data[4], false);
+                $metricsForOperation = Validators::validateMetricsForOperation($data[5], false);
+            }
+            if ($moduleType == 'activity') {
+                $channelsForActivity = Validators::validateChannelsForActivity($data[4], false);
+                $hooksForActivity = Validators::validateHooksForActivity($data[5], false);
+            }
+
+            $newModules[] = array(
+                'module_name'               => $moduleName,
+                'module_name_suffix'        => $moduleNameSuffix,
+                'module_display_name'       => $moduleDisplayName,
+                'module_description'        => $moduleDescription,
+                'operation_owns_location'   => $operationOwnsLocation,
+                'channels_for_activity'     => explode(',', $channelsForActivity), 
+                'hooks_for_activity'        => !empty($hooksForActivity) ? explode(',', $hooksForActivity) : null, 
+                'metrics_for_operation'     => !empty($metricsForOperation) ? explode(',', $metricsForOperation) : null,
+                'class_name'                => $derivedClassName
+            );
+        }
+        return $newModules;
+    }    
     
     protected function createGenerator()
     {

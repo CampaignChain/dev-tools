@@ -45,12 +45,33 @@ class Validators extends SensioValidators
         }
         return $name;
     }
+    
+    public static function validateModuleCount($modules)
+    {
+        if (count($modules) == 0) {
+            throw new \InvalidArgumentException('At least one module must be defined.');
+        }
+        return true;
+    }
+    
 
-    public static function validateModuleNameSuffix($suffix)
+    public static function validateModuleNameSuffix($suffix, $modules = array(), $required = false)
     {
         // validate characters
-        if (!preg_match('/^(?:[a-zA-Z0-9_-]*-?)+$/', $suffix)) {
-            throw new \InvalidArgumentException('The module name suffix contains invalid characters.');
+        if ($required) {
+          if (!preg_match('/^[a-zA-Z0-9_-]+$/', $suffix)) {
+              throw new \InvalidArgumentException('The module name suffix contains invalid characters.');
+          }
+          foreach ($modules as $module) {
+              if ($module['module_name_suffix'] == $suffix){
+                  throw new \InvalidArgumentException('The module name suffix is already in use.');
+                  break;                  
+              }
+          }
+        } else {
+          if (!preg_match('/^(?:[a-zA-Z0-9_-]*-?)+$/', $suffix)) {
+              throw new \InvalidArgumentException('The module name suffix contains invalid characters.');
+          }        
         }
         return $suffix;
     }
