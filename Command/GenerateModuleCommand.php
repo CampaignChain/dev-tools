@@ -59,7 +59,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
               new InputOption('dir', '', InputOption::VALUE_REQUIRED, 'The bundle directory'),
               new InputOption('gen-routing', '', InputOption::VALUE_REQUIRED, 'Whether to generate a routing.yml file'),
               new InputOption('modules', '', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'The modules to be added'),
-              new InputOption('more-modules', '', InputOption::VALUE_REQUIRED, 'Whether to add more modules (non-interactive mode only)')))
+              new InputOption('more-modules', '', InputOption::VALUE_REQUIRED, 'Whether to ask about adding more modules')))
             ->setName('campaignchain:generate:module')
             ->setDescription('Generates new CampaignChain module skeletons as a bundle');
         
@@ -685,8 +685,14 @@ class GenerateModuleCommand extends GenerateBundleCommand
         
     }
 
+    // parses 'modules' argument passed on the command line
+    // such as --modules="name:suffix:display-name:description:..." --modules=""
     public function parseModules($modules, $moduleType)
     {
+        // distinguish between 'modules' command-line argument
+        // which has module data in colon-separated format
+        // and properly-formatted 'modules' array
+        // generated through previous methods
         if (is_array($modules)) {
             if (isset($modules[0]['module_name'])) {
               return $modules;
@@ -708,8 +714,6 @@ class GenerateModuleCommand extends GenerateBundleCommand
             $moduleDisplayName = Validators::validateDisplayName($data[2], false);
             $moduleDescription = Validators::validateDescription($data[3], false);
             $derivedClassName = implode('', array_map('ucwords', explode('-', $moduleName . '-' . $moduleNameSuffix)));
-            $operationOwnsLocation = null;
-            $channelsForActivity = null;
             if ($moduleType == 'operation') {
                 $operationOwnsLocation = Validators::validateOperationOwnsLocation($data[4], false);
                 $metricsForOperation = Validators::validateMetricsForOperation($data[5], false);
@@ -724,8 +728,8 @@ class GenerateModuleCommand extends GenerateBundleCommand
                 'module_name_suffix'        => $moduleNameSuffix,
                 'module_display_name'       => $moduleDisplayName,
                 'module_description'        => $moduleDescription,
-                'operation_owns_location'   => $operationOwnsLocation,
-                'channels_for_activity'     => explode(',', $channelsForActivity), 
+                'operation_owns_location'   => !empty($operationOwnsLocation) ? $operationOwnsLocation : null,
+                'channels_for_activity'     => !empty($channelsForActivity) ? explode(',', $channelsForActivity) : null, 
                 'hooks_for_activity'        => !empty($hooksForActivity) ? explode(',', $hooksForActivity) : null, 
                 'metrics_for_operation'     => !empty($metricsForOperation) ? explode(',', $metricsForOperation) : null,
                 'class_name'                => $derivedClassName
