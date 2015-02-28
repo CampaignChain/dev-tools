@@ -55,13 +55,13 @@ class ModuleGenerator extends BundleGenerator
             $parameters['route_prefix'] = str_replace(array('/', '-'), '_', $packageName);
         }
 
+        // per-module files
         foreach ($modules as $module) {        
             $derivedClassName = $module['class_name'];
             if (strtolower($moduleType) == 'operation') {
                 $this->renderFile('job/Report.php.twig', $dir.'/Job/' . $derivedClassName . 'Report.php', array_merge($parameters, $module));        
                 $this->renderFile('form/OperationType.php.twig', $dir.'/Form/Type/' . $derivedClassName . 'OperationType.php', array_merge($parameters, $module));        
                 $this->renderFile('entity/Entity.php.twig', $dir.'/Entity/' . $derivedClassName . '.php', array_merge($parameters, $module));
-                $this->renderFile('views/fields.html.twig', $dir.'/Resources/views/Form/fields.html.twig', array_merge($parameters, $module));        
                 $this->renderFile('views/read.html.twig', $dir.'/Resources/views/read' . ((!empty($module['module_name_suffix'])) ? '_' . strtolower(str_replace('-', '_', $module['module_name_suffix'])) : '') . '.html.twig', array_merge($parameters, $module));        
                 $this->renderFile('public/css/base.css.twig', $dir.'/Resources/public/css/' . strtolower(str_replace('-', '_', $module['module_name'])) . ((!empty($module['module_name_suffix'])) ? '_' . strtolower(str_replace('-', '_', $module['module_name_suffix'])) : '') . '.css', array_merge($parameters, $module));        
             }
@@ -75,7 +75,11 @@ class ModuleGenerator extends BundleGenerator
                 $this->renderFile('controller/ReportController.php.twig', $dir.'/Controller/' . $derivedClassName . 'Controller.php', array_merge($parameters, $module));
             }                
         }
-        
+
+        // per-bundle files
+        if (strtolower($moduleType) == 'operation') {
+            $this->renderFile('views/fields.html.twig', $dir.'/Resources/views/Form/fields.html.twig', $parameters);        
+        }        
         $this->renderFile('config/campaignchain.yml.twig', $dir.'/campaignchain.yml', $parameters);
         $this->renderFile('config/composer.json.twig', $dir.'/composer.json', $parameters);
         $this->renderFile('config/config.yml.twig', $dir.'/Resources/config/config.yml', $parameters);

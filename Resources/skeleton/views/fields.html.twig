@@ -1,7 +1,8 @@
 {% if module_type == 'operation' %}
-{{ '{%' }} block {{ vendor_name|lower }}_operation_{{ module_name|lower|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|lower|replace({'-':'_'}) : '' }}_widget {{ '%}' }}
+{% for module in modules %}
+{{ '{%' }} block {{ vendor_name|lower }}_operation_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_widget {{ '%}' }}
     {{ '{%' }} spaceless {{ '%}' }}
-        {{ '{%' }} stylesheets '@{{ vendor_name|lower }}_operation_{{ module_name|lower|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|lower|replace({'-':'_'}) : '' }}_css' {{ '%}' }}
+        {{ '{%' }} stylesheets '@{{ vendor_name|lower }}_operation_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_css' {{ '%}' }}
 {% verbatim %}        <link href="{{ asset_url }}" type="text/css" rel="stylesheet" />
         {% endstylesheets %}
         {% include 'CampaignChainCoreBundle:Operation:field_header.html.twig' %}
@@ -12,4 +13,5 @@
         {% include 'CampaignChainCoreBundle:Operation:field_footer.html.twig' %}
     {% endspaceless %}
 {% endblock %}{% endverbatim %}
+{% endfor %}
 {% endif %}
