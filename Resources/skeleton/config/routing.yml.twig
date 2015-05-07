@@ -1,6 +1,6 @@
 # Please add the routes for your module here
 {% for module in modules %}
-{% if module_type == 'activity' %}
+{% if module_type == 'activity' or module_type = 'campaign' %}
 {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_new:
     pattern: /activity/{{ module.module_name|lower }}{{ module.module_name_suffix ? '/' ~ module.module_name_suffix|lower : '' }}/new
     defaults: { _controller: {{ bundle_name }}:{{ module.class_name }}:new }
@@ -18,11 +18,19 @@
     defaults: { _controller: {{ bundle_name }}:{{ module.class_name }}:editApi }
     options:
         expose: true
-
-{{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_read:
+    
+{% endif %}
+{% if module_type == 'activity' %}
+    {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_read:
     pattern: /activity/{{ module.module_name|lower }}{{ module.module_name_suffix ? '/' ~ module.module_name_suffix|lower : '' }}/{id}
     defaults: { _controller: {{ bundle_name }}:{{ module.class_name }}:read }
-    
+
+{% endif %}
+{% if module_type == 'campaign' %}
+    {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_plan:
+    pattern: /activity/{{ module.module_name|lower }}{{ module.module_name_suffix ? '/' ~ module.module_name_suffix|lower : '' }}/{id}
+    defaults: { _controller: {{ bundle_name }}:{{ module.class_name }}:plan }
+
 {% endif %}
 {% if module_type == 'channel' %}
 {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_create:
