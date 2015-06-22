@@ -12,7 +12,7 @@ modules:
             - {{ channel|trim }}
 {% endfor %}
 {% endif %}
-{% if module_type == 'activity' or module_type = 'campaign' %}
+{% if module_type == 'activity' or module_type == 'campaign' %}
         routes: 
             new: {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_new
             edit: {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_edit
@@ -35,9 +35,10 @@ modules:
 {% endif %}
 {% if module_type == 'location' or module_type == 'activity' or module_type == 'channel' %}
         hooks:
+            default:
 {% if module.hooks_for_activity|length > 0 %}
 {% for hook in module.hooks_for_activity %}
-            {{ hook|trim }}: true
+                {{ hook|trim }}: true
 {% endfor %}
 {% endif %}
 {% endif %}

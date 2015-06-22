@@ -1,34 +1,34 @@
 # Please add the routes for your module here
 {% for module in modules %}
-{% if module_type == 'activity' or module_type = 'campaign' %}
+{% if module_type == 'activity' or module_type == 'campaign' %}
 {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_new:
-    pattern: /activity/{{ module.module_name|lower }}{{ module.module_name_suffix ? '/' ~ module.module_name_suffix|lower : '' }}/new
+    pattern: /{{ module_type }}/{{ module.module_name|lower }}{{ module.module_name_suffix ? '/' ~ module.module_name_suffix|lower : '' }}/new
     defaults: { _controller: {{ bundle_name }}:{{ module.class_name }}:new }
 
 {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_edit:
-    pattern: /activity/{{ module.module_name|lower }}{{ module.module_name_suffix ? '/' ~ module.module_name_suffix|lower : '' }}/{id}/edit
+    pattern: /{{ module_type }}/{{ module.module_name|lower }}{{ module.module_name_suffix ? '/' ~ module.module_name_suffix|lower : '' }}/{id}/edit
     defaults: { _controller: {{ bundle_name }}:{{ module.class_name }}:edit }
 
 {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_edit_modal:
-    pattern: /modal/activity/{{ module.module_name|lower }}{{ module.module_name_suffix ? '/' ~ module.module_name_suffix|lower : '' }}/{id}/edit
+    pattern: /modal/{{ module_type }}/{{ module.module_name|lower }}{{ module.module_name_suffix ? '/' ~ module.module_name_suffix|lower : '' }}/{id}/edit
     defaults: { _controller: {{ bundle_name }}:{{ module.class_name }}:editModal }
 
 {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_edit_api:
-    pattern: /api/private/activity/{{ module.module_name|lower }}{{ module.module_name_suffix ? '/' ~ module.module_name_suffix|lower : '' }}/byactivity/{id}/edit
+    pattern: /api/private/{{ module_type }}/{{ module.module_name|lower }}{{ module.module_name_suffix ? '/' ~ module.module_name_suffix|lower : '' }}/byactivity/{id}/edit
     defaults: { _controller: {{ bundle_name }}:{{ module.class_name }}:editApi }
     options:
         expose: true
     
 {% endif %}
 {% if module_type == 'activity' %}
-    {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_read:
+{{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_read:
     pattern: /activity/{{ module.module_name|lower }}{{ module.module_name_suffix ? '/' ~ module.module_name_suffix|lower : '' }}/{id}
     defaults: { _controller: {{ bundle_name }}:{{ module.class_name }}:read }
 
 {% endif %}
 {% if module_type == 'campaign' %}
-    {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_plan:
-    pattern: /activity/{{ module.module_name|lower }}{{ module.module_name_suffix ? '/' ~ module.module_name_suffix|lower : '' }}/{id}
+{{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_plan:
+    pattern: /campaign/{{ module.module_name|lower }}{{ module.module_name_suffix ? '/' ~ module.module_name_suffix|lower : '' }}/{id}
     defaults: { _controller: {{ bundle_name }}:{{ module.class_name }}:plan }
 
 {% endif %}
