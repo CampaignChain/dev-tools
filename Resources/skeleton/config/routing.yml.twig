@@ -28,7 +28,7 @@
 {% endif %}
 {% if module_type == 'campaign' %}
 {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_plan:
-    pattern: /campaign/{{ module.module_name|lower }}{{ module.module_name_suffix ? '/' ~ module.module_name_suffix|lower : '' }}/{id}
+    pattern: /campaigns/{{ module.module_name|lower }}{{ module.module_name_suffix ? '/' ~ module.module_name_suffix|lower : '' }}
     defaults: { _controller: {{ bundle_name }}:{{ module.class_name }}:plan }
 
 {% endif %}
