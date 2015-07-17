@@ -1,6 +1,7 @@
 {
     "name": "campaignchain/dev-tools",
     "description": "Various tools for developing with CampaignChain, e.g. to generate CampaignChain modules from the command line.",
+    "keywords": ["campaignchain"],
     "type": "symfony-bundle",
     "homepage": "http://www.campaignchain.com",
     "license": "Apache-2.0",
