@@ -43,7 +43,8 @@ modules:
 {% endif %}
 {% endif %}
 {% if module_type == 'operation' %}
-        services: 
+        services:
+            job: {{ vendor_name|lower }}.job.operation.{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}
             report: {{ vendor_name|lower }}.job.report.{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}
         params: 
             owns_location: {{ module.operation_owns_location }}
