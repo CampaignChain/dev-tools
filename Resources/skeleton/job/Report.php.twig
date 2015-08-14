@@ -35,6 +35,12 @@ class {{ class_name }}Report implements JobReportInterface
 
     public function execute($operationId)
     {
+        $operationService = $this->container->get('campaignchain.core.operation');
+        $operation = $operationService->getOperation($operationId);
+
+        /*
+         * Add your custom code here.
+         */
     }
 
 }
