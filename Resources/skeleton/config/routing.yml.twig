@@ -3,19 +3,19 @@
 {% if module_type == 'activity' or module_type == 'campaign' %}
 {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_new:
     pattern: /{{ module_type }}/{{ module.module_name|lower }}{{ module.module_name_suffix ? '/' ~ module.module_name_suffix|lower : '' }}/new
-    defaults: { _controller: {{ bundle_name }}:{{ module.class_name }}:new }
+    defaults: { _controller: campaignchain.activity.controller.{{ vendor_name|lower }}.{{ module.module_name|lower }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower : '' }}:newAction }
 
 {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_edit:
     pattern: /{{ module_type }}/{{ module.module_name|lower }}{{ module.module_name_suffix ? '/' ~ module.module_name_suffix|lower : '' }}/{id}/edit
-    defaults: { _controller: {{ bundle_name }}:{{ module.class_name }}:edit }
+    defaults: { _controller: campaignchain.activity.controller.{{ vendor_name|lower }}.{{ module.module_name|lower }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower : '' }}:editAction }
 
 {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_edit_modal:
     pattern: /modal/{{ module_type }}/{{ module.module_name|lower }}{{ module.module_name_suffix ? '/' ~ module.module_name_suffix|lower : '' }}/{id}/edit
-    defaults: { _controller: {{ bundle_name }}:{{ module.class_name }}:editModal }
+    defaults: { _controller: campaignchain.activity.controller.{{ vendor_name|lower }}.{{ module.module_name|lower }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower : '' }}:editModalAction }
 
 {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_edit_api:
     pattern: /api/private/{{ module_type }}/{{ module.module_name|lower }}{{ module.module_name_suffix ? '/' ~ module.module_name_suffix|lower : '' }}/byactivity/{id}/edit
-    defaults: { _controller: {{ bundle_name }}:{{ module.class_name }}:editApi }
+    defaults: { _controller: campaignchain.activity.controller.{{ vendor_name|lower }}.{{ module.module_name|lower }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower : '' }}:editApiAction }
     options:
         expose: true
     
@@ -23,7 +23,7 @@
 {% if module_type == 'activity' %}
 {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_read:
     pattern: /activity/{{ module.module_name|lower }}{{ module.module_name_suffix ? '/' ~ module.module_name_suffix|lower : '' }}/{id}
-    defaults: { _controller: {{ bundle_name }}:{{ module.class_name }}:read }
+    defaults: { _controller: campaignchain.activity.controller.{{ vendor_name|lower }}.{{ module.module_name|lower }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower : '' }}:readAction }
 
 {% endif %}
 {% if module_type == 'campaign' %}

@@ -1,0 +1,17 @@
+parameters:
+{% for module in modules %}
+    campaignchain.operation.{{ vendor_name|lower }}.{{ module.module_name|lower }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower : '' }}:
+        bundle_name: "{{ vendor_name|lower }}/operation-{{ module.module_name|lower }}"
+        module_identifier: "{{ vendor_name|lower }}-{{ module.module_name|lower }}{{ module.module_name_suffix ? '-' ~ module.module_name_suffix|lower : '' }}"
+        form_type: "{{ namespace }}\\Form\\Type\\{{ module.class_name }}OperationType"
+{% endfor %}
+
+services:
+{% for module in modules %}
+    campaignchain.job.operation.{{ vendor_name|lower }}.{{ module.module_name|lower }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower : '' }}:
+        class: {{ namespace|replace({'\\\\': '\\'}) }}\Job\{{ module.class_name }}
+        arguments: [ @doctrine.orm.entity_manager, @service_container ]
+    campaignchain.job.report.{{ vendor_name|lower }}.{{ module.module_name|lower }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower : '' }}:
+        class: {{ namespace|replace({'\\\\': '\\'}) }}\Job\{{ module.class_name }}Report
+        arguments: [ @doctrine.orm.entity_manager, @service_container ]
+{% endfor %}

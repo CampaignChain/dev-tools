@@ -66,7 +66,7 @@ class ModuleGenerator extends BundleGenerator
                 $this->renderFile('public/css/base.css.twig', $dir.'/Resources/public/css/' . strtolower(str_replace('-', '_', $module['module_name'])) . ((!empty($module['module_name_suffix'])) ? '_' . strtolower(str_replace('-', '_', $module['module_name_suffix'])) : '') . '.css', array_merge($parameters, $module));        
             }
             if (strtolower($moduleType) == 'activity') {
-                $this->renderFile('controller/ActivityController.php.twig', $dir.'/Controller/' . $derivedClassName . 'Controller.php', array_merge($parameters, $module));        
+                $this->renderFile('controller/ActivityHandler.php.twig', $dir.'/Controller/' . $derivedClassName . 'Handler.php', array_merge($parameters, $module));
             }
             if (strtolower($moduleType) == 'channel') {
                 $this->renderFile('controller/ChannelController.php.twig', $dir.'/Controller/' . $derivedClassName . 'Controller.php', array_merge($parameters, $module));
@@ -77,9 +77,20 @@ class ModuleGenerator extends BundleGenerator
         }
 
         // per-bundle files
+        if (strtolower($moduleType) == 'activity') {
+            // overwrite the default services.yml file created by the Symfony generator
+            $this->renderFile('config/activity_services.yml.twig', $dir.'/Resources/config/services.yml', $parameters);
+        }
+        if (strtolower($moduleType) == 'location') {
+            // overwrite the default services.yml file created by the Symfony generator
+            $this->renderFile('config/location_services.yml.twig', $dir.'/Resources/config/services.yml', $parameters);
+        }
         if (strtolower($moduleType) == 'operation') {
+            // overwrite the default services.yml file created by the Symfony generator
+            $this->renderFile('config/operation_services.yml.twig', $dir.'/Resources/config/services.yml', $parameters);
             $this->renderFile('views/fields.html.twig', $dir.'/Resources/views/Form/fields.html.twig', $parameters);        
-        }        
+        }
+
         $this->renderFile('config/campaignchain.yml.twig', $dir.'/campaignchain.yml', $parameters);
         $this->renderFile('config/composer.json.twig', $dir.'/composer.json', $parameters);
         $this->renderFile('config/config.yml.twig', $dir.'/Resources/config/config.yml', $parameters);

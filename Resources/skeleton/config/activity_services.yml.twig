@@ -1,0 +1,33 @@
+parameters:
+# Parameters for the CampaignChain Activity modules in this Symfony bundle
+{% for module in modules %}
+    campaignchain.activity.{{ vendor_name|lower }}.{{ module.module_name|lower }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower : '' }}:
+        bundle_name: "{{ vendor_name|lower }}/activity-{{ module.module_name|lower }}"
+        module_identifier: "{{ vendor_name|lower }}-{{ module.module_name|lower }}{{ module.module_name_suffix ? '-' ~ module.module_name_suffix|lower : '' }}"
+        location: %{{ module.location_parameter_name }}%
+        equals_operation: {{ module.activity_equals_operation }}
+        operations:
+            {% for operation_parameter_name in module.operation_parameter_names %}
+            - %{{ operation_parameter_name|trim }}%
+            {% endfor %}
+        handler: "campaignchain.activity.controller.handler.{{ vendor_name|lower }}.{{ module.module_name|lower }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower : '' }}"
+{% endfor %}
+
+services:
+{% for module in modules %}
+    # The Symfony service evoking the default controller of the CampaignChain
+    # core package
+    campaignchain.activity.controller.{{ vendor_name|lower }}.{{ module.module_name|lower }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower : '' }}:
+        class: CampaignChain\CoreBundle\Controller\Module\ActivityModuleController
+        calls:
+            - [setContainer, ["@service_container"]]
+            - [setParameters, ["%campaignchain.activity.{{ vendor_name|lower }}.{{ module.module_name|lower }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower : '' }}%"]]
+    # The CampaignChain controller handler where the Activity's GUI and data
+    # is being processed.
+    campaignchain.activity.controller.handler.{{ vendor_name|lower }}.{{ module.module_name|lower }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower : '' }}:
+        class: {{ namespace|replace({'\\\\': '\\'}) }}\Controller\{{ module.module_name|capitalize }}{{ module.module_name_suffix ? module.module_name_suffix|capitalize : '' }}Handler
+        arguments:
+            - "@doctrine.orm.entity_manager"
+            - "@session"
+            - "@templating"
+{% endfor %}
