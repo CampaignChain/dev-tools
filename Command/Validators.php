@@ -120,7 +120,7 @@ class Validators extends SensioValidators
 
     public static function validateDescription($description)
     {
-        if(!preg_match("/^(?:[a-zA-Z0-9.\-\_\s]?)+$/", $description)) {
+        if(!preg_match("/^(?:[a-zA-Z0-9.,\-\_\s]?)+$/", $description)) {
             throw new \InvalidArgumentException('The description contains invalid characters.');
         }
         return $description;
@@ -128,7 +128,7 @@ class Validators extends SensioValidators
     
     public static function validateAuthorName($name)
     {
-        if(!preg_match("/^[a-zA-Z0-9.\-\_\s]+$/", $name)) {
+        if(!preg_match("/^[a-zA-Z0-9.,\-\_\s]+$/", $name)) {
             throw new \InvalidArgumentException('The author name contains invalid characters.');
         }
         return $name;
@@ -200,7 +200,43 @@ class Validators extends SensioValidators
           }        
         }
         return $value;
-    }    
+    }
+
+    public static function validateLocationParameterName($value)
+    {
+        // allow
+        // campaignchain.location.[vendor name].[module name]
+        // campaignchain.location.[vendor name].[module name].[module suffix]
+        foreach (explode(',', $value) as $c) {
+            $c = trim(strtr($c, '/', '\\'));
+            if (!preg_match('/^(campaignchain.location.)([a-zA-Z][a-zA-Z0-9_]*)+(.([a-zA-Z][a-zA-Z0-9_]*))+(.(?:[a-zA-Z][a-zA-Z0-9_]*?))+$/', $c)) {
+                throw new \InvalidArgumentException('The Location parameter name is not valid. The format should be "campaignchain.location.[vendor name].[module name].[optional module-suffix]".');
+            }
+        }
+        return $value;
+    }
+
+    public static function validateEqualsOperation($value)
+    {
+        if (!in_array($value, array('true', 'false'))) {
+            throw new \InvalidArgumentException('Only \'true\' and \'false\' values are supported');
+        }
+        return $value;
+    }
+
+    public static function validateOperationParameterNames($value)
+    {
+        // allow
+        // campaignchain.operation.[vendor name].[module name]
+        // campaignchain.operation.[vendor name].[module name].[module suffix]
+        foreach (explode(',', $value) as $c) {
+            $c = trim(strtr($c, '/', '\\'));
+            if (!preg_match('/^(campaignchain.operation.)([a-zA-Z][a-zA-Z0-9_]*)+(.([a-zA-Z][a-zA-Z0-9_]*))+(.(?:[a-zA-Z][a-zA-Z0-9_]*?))+$/', $c)) {
+                throw new \InvalidArgumentException('At least one of the Operation parameter names does not seem to be valid. Each of them should be in the format "campaignchain.operation.[vendor-name].[module-name].[optional module-suffix]".');
+            }
+        }
+        return $value;
+    }
 
     public static function validateMetricsForOperation($value)      
     {

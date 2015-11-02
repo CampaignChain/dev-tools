@@ -3,67 +3,34 @@
 
 namespace {{ namespace|replace({'\\\\': '\\'}) }}\Form\Type;
 
-use Symfony\Component\Form\AbstractType;
+use CampaignChain\CoreBundle\Form\Type\OperationType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Doctrine\ORM\EntityManager;
-use Symfony\Component\Form\FormView;
-use Symfony\Component\Form\FormInterface;
 
-class {{ class_name }}OperationType extends AbstractType
+class {{ class_name }}OperationType extends OperationType
 {
-    private $status;
-    private $view = 'default';
-    protected $em;
-    protected $container;
-    private $location;
-
-    public function __construct(EntityManager $em, ContainerInterface $container)
-    {
-        $this->em = $em;
-        $this->container = $container;
-    }
-
-    public function setStatus($status){
-        $this->status = $status;
-    }
-
-    public function setView($view){
-        $this->view = $view;
-    }
-
-    public function setLocation($location){
-        $this->location = $location;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function buildView(FormView $view, FormInterface $form, array $options)
-    {
-        if($this->location){
-            $view->vars['location'] = $this->location;
-        } else {
-            $view->vars['location'] = $options['data']->getOperation()->getActivity()->getLocation();
-        }
-    }
-
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
+        $defaults = array();
+        $resolver->setDefaults($defaults);
+
+        /*
+        Delete above code and use optional code below.
+
         $defaults = array(
             'data_class' => '{{ namespace|replace({'\\\\': '\\'}) }}\Entity\{{ class_name }}',
         );
 
-        if($this->status){
-            $defaults['data'] = $this->status;
+        if($this->content){
+            $defaults['data'] = $this->content;
         }
         $resolver->setDefaults($defaults);
+        */
     }
 
     public function getName()
