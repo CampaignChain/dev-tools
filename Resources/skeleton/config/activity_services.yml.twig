@@ -4,12 +4,14 @@ parameters:
     campaignchain.activity.{{ vendor_name|lower }}.{{ module.module_name|lower }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower : '' }}:
         bundle_name: "{{ vendor_name|lower }}/activity-{{ module.module_name|lower }}"
         module_identifier: "{{ vendor_name|lower }}-{{ module.module_name|lower }}{{ module.module_name_suffix ? '-' ~ module.module_name_suffix|lower : '' }}"
+{% if module.location_parameter_name is not null %}
         location: %{{ module.location_parameter_name }}%
+{% endif %}
         equals_operation: {{ module.activity_equals_operation }}
         operations:
-            {% for operation_parameter_name in module.operation_parameter_names %}
+{% for operation_parameter_name in module.operation_parameter_names %}
             - %{{ operation_parameter_name|trim }}%
-            {% endfor %}
+{% endfor %}
         handler: "campaignchain.activity.controller.handler.{{ vendor_name|lower }}.{{ module.module_name|lower }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower : '' }}"
 {% endfor %}
 

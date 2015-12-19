@@ -6,7 +6,7 @@ modules:
 {% if module.module_description|length > 0 %}
         description: {{ module.module_description }}
 {% endif %}
-{% if module_type == 'activity' %}
+{% if module_type == 'activity' and module.channels_for_activity is not null %}
         channels: 
 {% for channel in module.channels_for_activity %}
             - {{ channel|trim }}
