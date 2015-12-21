@@ -628,20 +628,41 @@ class GenerateModuleCommand extends GenerateBundleCommand
             if ($moduleType == 'activity') {
                 $output->writeln(array(
                     '',
-                    'For Activity modules only, specify the channels for the activity.',
+                    'Usually, an Activity is being executed in a single Channel.',
+                    'For example, the Activity of posting to a Twitter stream happens',
+                    'in the Twitter Channel.',
                     '',
-                    'The format for each channel module name is',
-                    '<comment>vendor/channel-[module-name]/[module-id]</comment>',
-                    '(like <comment>acme/channel-twitter/acme-twitter</comment>).',
-                    '',
-                    'List the channels as a comma-separated list.',
-                    ''
+                    'Yet, there are Activities that are being executed in multiple',
+                    'Channels which are being managed by other Modules. Such Activities',
+                    'must NOT be related to a Channel. For example, a Module for posting',
+                    'the same content to various social media channels.'
                 ));
-                $question = new Question($questionHelper->getQuestion('Channels for the activity', $channelsForActivity), $channelsForActivity);
+                $question = new Question($questionHelper->getQuestion('Does the Activity module execute in a single Channel?', 'yes'), 'yes');
                 $question->setValidator(function ($answer) {
-                    return Validators::validateChannelsForActivity($answer, false);
+                    return Validators::validateBooleanAnswer($answer, false);
                 });
-                $channelsForActivity = $questionHelper->ask($input, $output, $question);
+                $singleChannel = (
+                    $questionHelper->ask($input, $output, $question) == 'yes' ? true : false
+                );
+
+                if($singleChannel){
+                    $output->writeln(array(
+                        '',
+                        'For Activity modules only, specify the channels for the activity.',
+                        '',
+                        'The format for each channel module name is',
+                        '<comment>vendor/channel-[module-name]/[module-id]</comment>',
+                        '(like <comment>acme/channel-twitter/acme-twitter</comment>).',
+                        '',
+                        'List the channels as a comma-separated list.',
+                        ''
+                    ));
+                    $question = new Question($questionHelper->getQuestion('Channels for the activity', $channelsForActivity), $channelsForActivity);
+                    $question->setValidator(function ($answer) {
+                        return Validators::validateChannelsForActivity($answer, false);
+                    });
+                    $channelsForActivity = $questionHelper->ask($input, $output, $question);
+                }
             }
 
             /* hooks value */
@@ -666,8 +687,8 @@ class GenerateModuleCommand extends GenerateBundleCommand
 
             /* Location parameter name */
             $locationParameterName = null;
-            if ($moduleType == 'activity') {
-                $locationParameterName = strtolower('campaignchain.location.'.$vendorName.'.'.$moduleName);
+            if ($moduleType == 'activity' && $singleChannel) {
+                $locationParameterName = strtolower('campaignchain.location.' . $vendorName . '.' . $moduleName);
 
                 $output->writeln(array(
                     '',
@@ -725,13 +746,17 @@ class GenerateModuleCommand extends GenerateBundleCommand
 
             $derivedClassName = implode('', array_map('ucwords', explode('-', $moduleName . '-' . $moduleNameSuffix)));
 
+            if($channelsForActivity){
+                $channelsForActivity = explode(',', $channelsForActivity);
+            }
+
             $modules[] = array(
                 'module_name' => $moduleName,
                 'module_name_suffix' => $moduleNameSuffix,
                 'module_display_name' => $moduleDisplayName,
                 'module_description' => $moduleDescription,
                 'operation_owns_location' => $operationOwnsLocation,
-                'channels_for_activity' => explode(',', $channelsForActivity),
+                'channels_for_activity' => $channelsForActivity,
                 'hooks_for_activity' => !empty($hooksForActivity) ? explode(',', $hooksForActivity) : null,
                 'metrics_for_operation' => !empty($metricsForOperation) ? explode(',', $metricsForOperation) : null,
                 'location_parameter_name' => $locationParameterName,

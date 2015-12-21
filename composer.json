@@ -19,7 +19,7 @@
     "require": {
         "symfony/symfony": "~2.5",
         "symfony/console": "~2.5",
-        "sensio/generator-bundle": ">=2.3"
+        "sensio/generator-bundle": "~2.5"
     },
     "autoload": {
       "psr-4": { "CampaignChain\\GeneratorBundle\\": "" }
