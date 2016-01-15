@@ -27,7 +27,7 @@ services:
     # The CampaignChain controller handler where the Activity's GUI and data
     # is being processed.
     campaignchain.activity.controller.handler.{{ vendor_name|lower }}.{{ module.module_name|lower }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower : '' }}:
-        class: {{ namespace|replace({'\\\\': '\\'}) }}\Controller\{{ module.module_name|capitalize }}{{ module.module_name_suffix ? module.module_name_suffix|capitalize : '' }}Handler
+        class: {{ namespace|replace({'\\\\': '\\'}) }}\Controller\{{ module.class_name }}Handler
         arguments:
             - "@doctrine.orm.entity_manager"
             - "@session"
