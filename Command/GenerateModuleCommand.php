@@ -60,7 +60,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
                 new InputOption('gen-routing', '', InputOption::VALUE_REQUIRED, 'Whether to generate a routing.yml file'),
                 new InputOption('modules', '', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'The modules to be added'),
                 new InputOption('more-modules', '', InputOption::VALUE_REQUIRED, 'Whether to ask about adding more modules')))
-            ->setName('campaignchain:generate:module')
+            ->setName('campaignchain:module:generate')
             ->setDescription('Generates new CampaignChain module skeletons as a bundle');
 
     }
