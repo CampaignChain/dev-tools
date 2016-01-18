@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="{{ vendor_name|lower }}_operation_{{ module_name|lower|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|lower|replace({'-':'_'}) : '' }}")
+ * @ORM\Table(name="{{ vendor_name|lower }}_operation_{{ module_name_underscore }}{{ module_name_suffix ? '_' ~ module_name_suffix|lower|replace({'-':'_'}) : '' }}")
  */
 class {{ class_name }} extends Meta
 {

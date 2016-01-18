@@ -5,9 +5,9 @@ assetic:
         - {{ bundle_name }}
     assets:
 {% for module in modules %}
-        {{ vendor_name|lower }}_operation_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_css:
+        {{ vendor_name|lower }}_operation_{{ module.module_name_underscore }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_css:
             inputs:
-                - '@{{ bundle_name }}/Resources/public/css/{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}.css'
+                - '@{{ bundle_name }}/Resources/public/css/{{ module.module_name_underscore }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}.css'
 {% endfor %}
 twig:
     form:

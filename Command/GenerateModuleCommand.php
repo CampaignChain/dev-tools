@@ -318,7 +318,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
             $output->writeln($questionHelper->getHelperSet()->get('formatter')->formatBlock($error->getMessage(), 'error'));
         }
 
-        $derivedModuleName = implode('', array_map('ucwords', explode('-', $modules[0]['module_name'])));
+        $derivedModuleName = implode('', array_map('ucwords', explode('-', str_replace(' ', '', $modules[0]['module_name']))));
         $recommendedNamespace = ucfirst($derivedVendorName) . '/' . ucfirst($moduleType) . '/' . $derivedModuleName . 'Bundle';
         if (null === $namespace) {
             $output->writeln(array(
@@ -378,7 +378,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
         } catch (\Exception $error) {
             $output->writeln($questionHelper->getHelperSet()->get('formatter')->formatBlock($error->getMessage(), 'error'));
         }
-        $recommendedPackageName = strtolower($derivedVendorName) . '/' . strtolower($moduleType) . '-' . strtolower($modules[0]['module_name']);
+        $recommendedPackageName = strtolower($derivedVendorName) . '/' . strtolower($moduleType) . '-' . strtolower(str_replace(' ', '-', $modules[0]['module_name']));
 
         if (null === $packageName) {
             $output->writeln(array(
@@ -512,7 +512,9 @@ class GenerateModuleCommand extends GenerateBundleCommand
                     '',
                     'Provide the module name in CamelCase (e.g. "MailChimp")',
                     'if you want to influence how the respective classes will',
-                    'be auto-generated.',
+                    'be auto-generated. Should the module name consist of more than',
+                    'one word, then provide it with a blank character and upper case',
+                    '(e.g. "Social Media").',
                     ''
                 ));
                 $question = new Question($questionHelper->getQuestion('Module name', $moduleName), $moduleName);
@@ -529,6 +531,9 @@ class GenerateModuleCommand extends GenerateBundleCommand
             } else {
                 $moduleName = $modules[0]['module_name'];
             }
+
+            $moduleNameUnderscore = strtolower(str_replace(' ', '_', $moduleName));
+            $moduleNameHyphen = strtolower(str_replace(' ', '-', $moduleName));
 
             /** module name suffix **/
             $moduleNameSuffix = null;
@@ -552,10 +557,12 @@ class GenerateModuleCommand extends GenerateBundleCommand
 
             $moduleNameSuffix = $questionHelper->ask($input, $output, $question);
 
+            $moduleIdentifier = $this->createModuleIdentifier($vendorName, $moduleNameHyphen, $moduleNameSuffix);
+
             $output->writeln(array(
                 '',
                 'Based on your inputs, the module identifier for your module will be.',
-                '<comment>' . $this->createModuleIdentifier($vendorName, $moduleName, $moduleNameSuffix) . '</comment>).',
+                '<comment>' . $moduleIdentifier . '</comment>).',
                 ''
             ));
 
@@ -688,7 +695,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
             /* Location parameter name */
             $locationParameterName = null;
             if ($moduleType == 'activity' && $singleChannel) {
-                $locationParameterName = strtolower('campaignchain.location.' . $vendorName . '.' . $moduleName);
+                $locationParameterName = strtolower('campaignchain.location.' . $vendorName . '.' . $moduleNameUnderscore);
 
                 $output->writeln(array(
                     '',
@@ -720,7 +727,7 @@ class GenerateModuleCommand extends GenerateBundleCommand
             /* Operations related to Activity */
             $operationParameterNames = null;
             if ($moduleType == 'activity') {
-                $operationParameterNames = 'campaignchain.operation.'.$vendorName.'.'.$moduleName;
+                $operationParameterNames = 'campaignchain.operation.'.$vendorName.'.'.$moduleNameUnderscore;
                 if($moduleNameSuffix){
                     $operationParameterNames .= '.'.str_replace('-', '_', $moduleNameSuffix);
                 }
@@ -744,25 +751,28 @@ class GenerateModuleCommand extends GenerateBundleCommand
                 $operationParameterNames = $questionHelper->ask($input, $output, $question);
             }
 
-            $derivedClassName = implode('', array_map('ucwords', explode('-', $moduleName . '-' . $moduleNameSuffix)));
+            $derivedClassName = implode('', array_map('ucwords', explode('-', $moduleNameHyphen . '-' . $moduleNameSuffix)));
 
             if($channelsForActivity){
                 $channelsForActivity = explode(',', $channelsForActivity);
             }
 
             $modules[] = array(
-                'module_name' => $moduleName,
-                'module_name_suffix' => $moduleNameSuffix,
-                'module_display_name' => $moduleDisplayName,
-                'module_description' => $moduleDescription,
-                'operation_owns_location' => $operationOwnsLocation,
-                'channels_for_activity' => $channelsForActivity,
-                'hooks_for_activity' => !empty($hooksForActivity) ? explode(',', $hooksForActivity) : null,
-                'metrics_for_operation' => !empty($metricsForOperation) ? explode(',', $metricsForOperation) : null,
-                'location_parameter_name' => $locationParameterName,
+                'module_name'               => $moduleName,
+                'module_identifier'         => $moduleIdentifier,
+                'module_name_underscore'    => $moduleNameUnderscore,
+                'module_name_hyphen'        => $moduleNameHyphen,
+                'module_name_suffix'        => $moduleNameSuffix,
+                'module_display_name'       => $moduleDisplayName,
+                'module_description'        => $moduleDescription,
+                'operation_owns_location'   => $operationOwnsLocation,
+                'channels_for_activity'     => $channelsForActivity,
+                'hooks_for_activity'        => !empty($hooksForActivity) ? explode(',', $hooksForActivity) : null,
+                'metrics_for_operation'     => !empty($metricsForOperation) ? explode(',', $metricsForOperation) : null,
+                'location_parameter_name'   => $locationParameterName,
                 'activity_equals_operation' => $equalsOperation,
                 'operation_parameter_names' => explode(',', $operationParameterNames),
-                'class_name' => $derivedClassName
+                'class_name'                => $derivedClassName
             );
 
             $output->writeln(array(
@@ -806,9 +816,11 @@ class GenerateModuleCommand extends GenerateBundleCommand
                 $moduleName = $newModules[0]['module_name'];
                 $moduleNameSuffix = Validators::validateModuleNameSuffix($data[1], $newModules, true, false);
             }
+            $moduleNameUnderscore = strtolower(str_replace(' ', '_', $moduleName));
+            $moduleNameHyphen = strtolower(str_replace(' ', '-', $moduleName));
             $moduleDisplayName = Validators::validateDisplayName($data[2], false);
             $moduleDescription = Validators::validateDescription($data[3], false);
-            $derivedClassName = implode('', array_map('ucwords', explode('-', $moduleName . '-' . $moduleNameSuffix)));
+            $derivedClassName = implode('', array_map('ucwords', explode('-', $moduleNameHyphen . '-' . $moduleNameSuffix)));
             if ($moduleType == 'operation') {
                 $operationOwnsLocation = Validators::validateOperationOwnsLocation($data[4], false);
                 $metricsForOperation = Validators::validateMetricsForOperation($data[5], false);
@@ -819,15 +831,17 @@ class GenerateModuleCommand extends GenerateBundleCommand
             }
 
             $newModules[] = array(
-                'module_name' => $moduleName,
-                'module_name_suffix' => $moduleNameSuffix,
-                'module_display_name' => $moduleDisplayName,
-                'module_description' => $moduleDescription,
-                'operation_owns_location' => !empty($operationOwnsLocation) ? $operationOwnsLocation : null,
-                'channels_for_activity' => !empty($channelsForActivity) ? explode(',', $channelsForActivity) : null,
-                'hooks_for_activity' => !empty($hooksForActivity) ? explode(',', $hooksForActivity) : null,
-                'metrics_for_operation' => !empty($metricsForOperation) ? explode(',', $metricsForOperation) : null,
-                'class_name' => $derivedClassName
+                'module_name'               => $moduleName,
+                'module_name_underscore'    => $moduleNameUnderscore,
+                'module_name_hyphen'        => $moduleNameHyphen,
+                'module_name_suffix'        => $moduleNameSuffix,
+                'module_display_name'       => $moduleDisplayName,
+                'module_description'        => $moduleDescription,
+                'operation_owns_location'   => !empty($operationOwnsLocation) ? $operationOwnsLocation : null,
+                'channels_for_activity'     => !empty($channelsForActivity) ? explode(',', $channelsForActivity) : null,
+                'hooks_for_activity'        => !empty($hooksForActivity) ? explode(',', $hooksForActivity) : null,
+                'metrics_for_operation'     => !empty($metricsForOperation) ? explode(',', $metricsForOperation) : null,
+                'class_name'                => $derivedClassName
             );
         }
         return $newModules;
@@ -838,9 +852,9 @@ class GenerateModuleCommand extends GenerateBundleCommand
         return new ModuleGenerator($this->getContainer()->get('filesystem'));
     }
 
-    protected function createModuleIdentifier($vendorName, $moduleName, $moduleNameSuffix = '')
+    protected function createModuleIdentifier($vendorName, $moduleNameHyphen, $moduleNameSuffix = '')
     {
-        $moduleIdentifier = strtolower($vendorName) . '-' . strtolower($moduleName);
+        $moduleIdentifier = strtolower($vendorName) . '-' . $moduleNameHyphen;
         if (!empty($moduleNameSuffix)) {
             $moduleIdentifier .= '-' . strtolower($moduleNameSuffix);
         }

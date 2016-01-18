@@ -1,7 +1,7 @@
 
 modules:
 {% for module in modules %}
-    {{ vendor_name|lower }}-{{ module.module_name|lower }}{{ module.module_name_suffix ? '-' ~ module.module_name_suffix|lower : '' }}:
+    {{ module.module_identifier }}:
         display_name: {{ module.module_display_name }}
 {% if module.module_description|length > 0 %}
         description: {{ module.module_description }}
@@ -14,24 +14,24 @@ modules:
 {% endif %}
 {% if module_type == 'activity' or module_type == 'campaign' %}
         routes: 
-            new: {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_new
-            edit: {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_edit
-            edit_modal: {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_edit_modal
-            edit_api: {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_edit_api
+            new: {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name_underscore }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_new
+            edit: {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name_underscore }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_edit
+            edit_modal: {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name_underscore }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_edit_modal
+            edit_api: {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name_underscore }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_edit_api
 {% endif %}
 {% if module_type == 'activity' %}
-            read: {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_read
+            read: {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name_underscore }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_read
 {% endif %}
 {% if module_type == 'campaign' %}
-            plan: {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_plan
+            plan: {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name_underscore }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_plan
 {% endif %}
 {% if module_type == 'channel' %}
         routes: 
-            new: {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_create
+            new: {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name_underscore }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_create
 {% endif %}
 {% if module_type == 'report' %}
         routes: 
-            index: {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_index
+            index: {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name_underscore }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_index
 {% endif %}
 {% if module_type == 'location' or module_type == 'activity' or module_type == 'channel' %}
         hooks:
@@ -44,8 +44,8 @@ modules:
 {% endif %}
 {% if module_type == 'operation' %}
         services:
-            job: {{ vendor_name|lower }}.job.operation.{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}
-            report: {{ vendor_name|lower }}.job.report.{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}
+            job: {{ vendor_name|lower }}.job.operation.{{ module.module_name_underscore }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}
+            report: {{ vendor_name|lower }}.job.report.{{ module.module_name_underscore }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}
         params: 
             owns_location: {{ module.operation_owns_location }}
 {% if module.metrics_for_operation|length > 0 %}

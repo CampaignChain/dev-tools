@@ -1,6 +1,6 @@
 {% if module_type == 'operation' %}
 {% for module in modules %}
-{{ '{%' }} block {{ vendor_name|lower }}_operation_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_widget {{ '%}' }}
+{{ '{%' }} block {{ vendor_name|lower }}_operation_{{ module.module_name_underscore }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_widget {{ '%}' }}
     {{ '{%' }} spaceless {{ '%}' }}
         {{ '{%' }} stylesheets '@{{ vendor_name|lower }}_operation_{{ module.module_name|lower|replace({'-':'_'}) }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_css' {{ '%}' }}
 {% verbatim %}        <link href="{{ asset_url }}" type="text/css" rel="stylesheet" />

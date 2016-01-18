@@ -35,7 +35,7 @@ class {{ class_name }}OperationType extends OperationType
 
     public function getName()
     {
-        return '{{ vendor_name|lower }}_operation_{{ module_name|lower|replace({'-':'_'}) }}{{ module_name_suffix ? '_' ~ module_name_suffix|lower|replace({'-':'_'}) : '' }}';
+        return '{{ vendor_name|lower }}_operation_{{ module_name_underscore }}{{ module_name_suffix ? '_' ~ module_name_suffix|lower|replace({'-':'_'}) : '' }}';
     }
 }
 {% endif %}

@@ -40,7 +40,7 @@ class Validators extends SensioValidators
     public static function validateModuleName($name)
     {
         // validate characters
-        if (!preg_match('/^(?:[a-zA-Z0-9_-]*-?)+$/', $name)) {
+        if (!preg_match('/^(?:[a-zA-Z0-9\s_-]*-?)+$/', $name)) {
             throw new \InvalidArgumentException('The module name contains invalid characters.');
         }
         return $name;
