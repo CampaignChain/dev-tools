@@ -63,7 +63,7 @@ class ModuleGenerator extends BundleGenerator
                 $this->renderFile('form/OperationType.php.twig', $dir.'/Form/Type/' . $derivedClassName . 'OperationType.php', array_merge($parameters, $module));        
                 $this->renderFile('entity/Entity.php.twig', $dir.'/Entity/' . $derivedClassName . '.php', array_merge($parameters, $module));
                 $this->renderFile('views/read.html.twig', $dir.'/Resources/views/read' . ((!empty($module['module_name_suffix'])) ? '_' . strtolower(str_replace('-', '_', $module['module_name_suffix'])) : '') . '.html.twig', array_merge($parameters, $module));        
-                $this->renderFile('public/css/base.css.twig', $dir.'/Resources/public/css/' . strtolower(str_replace('-', '_', $module['module_name'])) . ((!empty($module['module_name_suffix'])) ? '_' . strtolower(str_replace('-', '_', $module['module_name_suffix'])) : '') . '.css', array_merge($parameters, $module));        
+                $this->renderFile('public/css/base.css.twig', $dir.'/Resources/public/css/' . $module['module_name_underscore'] . ((!empty($module['module_name_suffix'])) ? '_' . strtolower(str_replace('-', '_', $module['module_name_suffix'])) : '') . '.css', array_merge($parameters, $module));
             }
             if (strtolower($moduleType) == 'activity') {
                 $this->renderFile('controller/ActivityHandler.php.twig', $dir.'/Controller/' . $derivedClassName . 'Handler.php', array_merge($parameters, $module));
