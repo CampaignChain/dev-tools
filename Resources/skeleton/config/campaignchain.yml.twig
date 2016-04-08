@@ -44,8 +44,8 @@ modules:
 {% endif %}
 {% if module_type == 'operation' %}
         services:
-            job: {{ vendor_name|lower }}.job.operation.{{ module.module_name_underscore }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}
-            report: {{ vendor_name|lower }}.job.report.{{ module.module_name_underscore }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}
+            job: campaignchain.job.operation.{{ vendor_name|lower }}.{{ module.module_name|lower }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower : '' }}
+            report: campaignchain.job.report.{{ vendor_name|lower }}.{{ module.module_name|lower }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower : '' }}
         params: 
             owns_location: {{ module.operation_owns_location }}
 {% if module.metrics_for_operation|length > 0 %}
