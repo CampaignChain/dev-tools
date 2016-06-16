@@ -1,0 +1,39 @@
+<?php
+namespace {{ namespace|replace({'\\\\': '\\'}) }}\Job;
+
+use CampaignChain\CoreBundle\Job\JobActionInterface;
+use Doctrine\ORM\EntityManager;
+
+class Job implements JobActionInterface
+{
+    /**
+     * @var EntityManager
+     */
+    protected $em;
+
+    /**
+     * @var string
+     */
+    protected $message;
+
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
+    public function execute($id)
+    {
+        /*
+         * Add your code here.
+         */
+
+        $this->message = "";
+
+        return self::STATUS_OK;
+    }
+
+    public function getMessage()
+    {
+        return $this->message;
+    }
+}

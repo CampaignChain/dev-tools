@@ -1,0 +1,6 @@
+services:
+{% for module in modules %}
+    {{ vendor_name|lower }}.{{ module.module_name_underscore }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower : '' }}.job:
+        class: {{ namespace|replace({'\\\\': '\\'}) }}\Service\Job
+        arguments: [ "@doctrine.orm.entity_manager" ]
+{% endfor %}
