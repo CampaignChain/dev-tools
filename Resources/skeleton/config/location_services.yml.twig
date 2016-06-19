@@ -1,7 +1,7 @@
 parameters:
     # Parameters for the CampaignChain Location modules in this Symfony bundle
 {% for module in modules %}
-    campaignchain.location.{{ vendor_name|lower }}.{{ module.module_name_underscore }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower : '' }}:
+    campaignchain.location.{{ vendor_name|lower }}.{{ module.module_name_underscore }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}:
         bundle_name: "{{ vendor_name|lower }}/location-{{ module.module_name_hyphen }}"
         module_identifier: "{{ module.module_identifier }}"
 {% endfor %}

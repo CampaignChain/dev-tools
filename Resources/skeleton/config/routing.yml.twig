@@ -3,19 +3,19 @@
 {% if module_type == 'activity' or module_type == 'campaign' %}
 {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name_underscore }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_new:
     pattern: /{{ module_type }}/{{ module.module_name_hyphen }}{{ module.module_name_suffix ? '/' ~ module.module_name_suffix|lower : '' }}/new
-    defaults: { _controller: campaignchain.activity.controller.{{ vendor_name|lower }}.{{ module.module_name_underscore }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower : '' }}:newAction }
+    defaults: { _controller: campaignchain.activity.controller.{{ vendor_name|lower }}.{{ module.module_name_underscore }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}:newAction }
 
 {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name_underscore }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_edit:
     pattern: /{{ module_type }}/{{ module.module_name_hyphen }}{{ module.module_name_suffix ? '/' ~ module.module_name_suffix|lower : '' }}/{id}/edit
-    defaults: { _controller: campaignchain.activity.controller.{{ vendor_name|lower }}.{{ module.module_name_underscore }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower : '' }}:editAction }
+    defaults: { _controller: campaignchain.activity.controller.{{ vendor_name|lower }}.{{ module.module_name_underscore }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}:editAction }
 
 {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name_underscore }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_edit_modal:
     pattern: /modal/{{ module_type }}/{{ module.module_name_hyphen }}{{ module.module_name_suffix ? '/' ~ module.module_name_suffix|lower : '' }}/{id}/edit
-    defaults: { _controller: campaignchain.activity.controller.{{ vendor_name|lower }}.{{ module.module_name_underscore }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower : '' }}:editModalAction }
+    defaults: { _controller: campaignchain.activity.controller.{{ vendor_name|lower }}.{{ module.module_name_underscore }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}:editModalAction }
 
 {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name_underscore }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_edit_api:
     pattern: /api/private/{{ module_type }}/{{ module.module_name_hyphen }}{{ module.module_name_suffix ? '/' ~ module.module_name_suffix|lower : '' }}/byactivity/{id}/edit
-    defaults: { _controller: campaignchain.activity.controller.{{ vendor_name|lower }}.{{ module.module_name_underscore }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower : '' }}:editApiAction }
+    defaults: { _controller: campaignchain.activity.controller.{{ vendor_name|lower }}.{{ module.module_name_underscore }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}:editApiAction }
     options:
         expose: true
     
@@ -23,7 +23,7 @@
 {% if module_type == 'activity' %}
 {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name_underscore }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_read:
     pattern: /activity/{{ module.module_name_hyphen }}{{ module.module_name_suffix ? '/' ~ module.module_name_suffix|lower : '' }}/{id}
-    defaults: { _controller: campaignchain.activity.controller.{{ vendor_name|lower }}.{{ module.module_name_underscore }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower : '' }}:readAction }
+    defaults: { _controller: campaignchain.activity.controller.{{ vendor_name|lower }}.{{ module.module_name_underscore }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}:readAction }
 
 {% endif %}
 {% if module_type == 'campaign' %}
