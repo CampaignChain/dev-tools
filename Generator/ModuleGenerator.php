@@ -74,6 +74,19 @@ class ModuleGenerator extends BundleGenerator
             }
             if (strtolower($moduleType) == 'channel') {
                 $this->renderFile('controller/ChannelController.php.twig', $dir.'/Controller/' . $derivedClassName . 'Controller.php', array_merge($parameters, $module));
+                
+                $iconFileName = $module['module_name_hyphen'];
+                if(
+                    isset($module['module_name_suffix']) &&
+                    !empty($module['module_name_suffix'])
+                ) {
+                    $iconFileName .= '-'.$module['module_name_suffix_hyphen'];
+                }
+
+                $fs = new Filesystem();
+                $fs->copy(__DIR__.'/../Resources/skeleton/public/images/icons/16x16/channel.png', $dir.'/Resources/public/images/icons/16x16/'.$iconFileName.'.png');
+                $fs->copy(__DIR__.'/../Resources/skeleton/public/images/icons/24x24/channel.png', $dir.'/Resources/public/images/icons/24x24/'.$iconFileName.'.png');
+                $fs->copy(__DIR__.'/../Resources/skeleton/public/images/icons/32x32/channel.png', $dir.'/Resources/public/images/icons/32x32/'.$iconFileName.'.png');
             } 
             if (strtolower($moduleType) == 'report') {
                 $this->renderFile('controller/ReportController.php.twig', $dir.'/Controller/' . $derivedClassName . 'Controller.php', array_merge($parameters, $module));

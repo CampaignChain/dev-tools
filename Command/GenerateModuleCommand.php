@@ -472,6 +472,12 @@ class GenerateModuleCommand extends GenerateBundleCommand
                 '',
             ));
         }
+        if (strtolower($moduleType) == 'channel') {
+            $messages = array_merge($messages, array(
+                '- Replace the default Channel icons in <comment>Resources/public/images/icons/</comment>. Make sure you preserve the file names.',
+                '',
+            ));
+        }
         if (strtolower($moduleType) == 'operation') {
             $messages = array_merge($messages, array(
                 '- Edit the <comment>campaignchain.yml</comment> file and add metrics for your module.',
@@ -757,22 +763,27 @@ class GenerateModuleCommand extends GenerateBundleCommand
                 $channelsForActivity = explode(',', $channelsForActivity);
             }
 
+            $moduleNameSuffixUnderscore = strtolower(str_replace(' ', '_', $moduleNameSuffix));
+            $moduleNameSuffixHyphen = strtolower(str_replace(' ', '-', $moduleNameSuffix));
+
             $modules[] = array(
-                'module_name'               => $moduleName,
-                'module_identifier'         => $moduleIdentifier,
-                'module_name_underscore'    => $moduleNameUnderscore,
-                'module_name_hyphen'        => $moduleNameHyphen,
-                'module_name_suffix'        => $moduleNameSuffix,
-                'module_display_name'       => $moduleDisplayName,
-                'module_description'        => $moduleDescription,
-                'operation_owns_location'   => $operationOwnsLocation,
-                'channels_for_activity'     => $channelsForActivity,
-                'hooks_for_activity'        => !empty($hooksForActivity) ? explode(',', $hooksForActivity) : null,
-                'metrics_for_operation'     => !empty($metricsForOperation) ? explode(',', $metricsForOperation) : null,
-                'location_parameter_name'   => $locationParameterName,
-                'activity_equals_operation' => $equalsOperation,
-                'operation_parameter_names' => explode(',', $operationParameterNames),
-                'class_name'                => $derivedClassName
+                'module_name'                   => $moduleName,
+                'module_identifier'             => $moduleIdentifier,
+                'module_name_underscore'        => $moduleNameUnderscore,
+                'module_name_hyphen'            => $moduleNameHyphen,
+                'module_name_suffix'            => $moduleNameSuffix,
+                'module_name_suffix_underscore' => $moduleNameSuffixUnderscore,
+                'module_name_suffix_hyphen'     => $moduleNameSuffixHyphen,
+                'module_display_name'           => $moduleDisplayName,
+                'module_description'            => $moduleDescription,
+                'operation_owns_location'       => $operationOwnsLocation,
+                'channels_for_activity'         => $channelsForActivity,
+                'hooks_for_activity'            => !empty($hooksForActivity) ? explode(',', $hooksForActivity) : null,
+                'metrics_for_operation'         => !empty($metricsForOperation) ? explode(',', $metricsForOperation) : null,
+                'location_parameter_name'       => $locationParameterName,
+                'activity_equals_operation'     => $equalsOperation,
+                'operation_parameter_names'     => explode(',', $operationParameterNames),
+                'class_name'                    => $derivedClassName
             );
 
             $output->writeln(array(
@@ -818,6 +829,8 @@ class GenerateModuleCommand extends GenerateBundleCommand
             }
             $moduleNameUnderscore = strtolower(str_replace(' ', '_', $moduleName));
             $moduleNameHyphen = strtolower(str_replace(' ', '-', $moduleName));
+            $moduleNameSuffixUnderscore = strtolower(str_replace(' ', '_', $moduleNameSuffix));
+            $moduleNameSuffixHyphen = strtolower(str_replace(' ', '-', $moduleNameSuffix));
             $moduleDisplayName = Validators::validateDisplayName($data[2], false);
             $moduleDescription = Validators::validateDescription($data[3], false);
             $derivedClassName = implode('', array_map('ucwords', explode('-', $moduleNameHyphen . '-' . $moduleNameSuffix)));
@@ -831,17 +844,19 @@ class GenerateModuleCommand extends GenerateBundleCommand
             }
 
             $newModules[] = array(
-                'module_name'               => $moduleName,
-                'module_name_underscore'    => $moduleNameUnderscore,
-                'module_name_hyphen'        => $moduleNameHyphen,
-                'module_name_suffix'        => $moduleNameSuffix,
-                'module_display_name'       => $moduleDisplayName,
-                'module_description'        => $moduleDescription,
-                'operation_owns_location'   => !empty($operationOwnsLocation) ? $operationOwnsLocation : null,
-                'channels_for_activity'     => !empty($channelsForActivity) ? explode(',', $channelsForActivity) : null,
-                'hooks_for_activity'        => !empty($hooksForActivity) ? explode(',', $hooksForActivity) : null,
-                'metrics_for_operation'     => !empty($metricsForOperation) ? explode(',', $metricsForOperation) : null,
-                'class_name'                => $derivedClassName
+                'module_name'                   => $moduleName,
+                'module_name_underscore'        => $moduleNameUnderscore,
+                'module_name_hyphen'            => $moduleNameHyphen,
+                'module_name_suffix'            => $moduleNameSuffix,
+                'module_name_suffix_underscore' => $moduleNameSuffixUnderscore,
+                'module_name_suffix_hyphen'     => $moduleNameSuffixHyphen,
+                'module_display_name'           => $moduleDisplayName,
+                'module_description'            => $moduleDescription,
+                'operation_owns_location'       => !empty($operationOwnsLocation) ? $operationOwnsLocation : null,
+                'channels_for_activity'         => !empty($channelsForActivity) ? explode(',', $channelsForActivity) : null,
+                'hooks_for_activity'            => !empty($hooksForActivity) ? explode(',', $hooksForActivity) : null,
+                'metrics_for_operation'         => !empty($metricsForOperation) ? explode(',', $metricsForOperation) : null,
+                'class_name'                    => $derivedClassName
             );
         }
         return $newModules;
