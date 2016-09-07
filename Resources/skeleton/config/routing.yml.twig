@@ -31,6 +31,12 @@
     pattern: /campaigns/{{ module.module_name_hyphen }}{{ module.module_name_suffix ? '/' ~ module.module_name_suffix|lower : '' }}
     defaults: { _controller: {{ bundle_name }}:{{ module.class_name }}:plan }
 
+{{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name_underscore }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_plan_detail:
+    pattern: /campaigns/{{ module.module_name_hyphen }}{{ module.module_name_suffix ? '/' ~ module.module_name_suffix|lower : '' }}
+    defaults: { _controller: {{ bundle_name }}:{{ module.class_name }}:planDetail }
+    options:
+        expose: true
+
 {% endif %}
 {% if module_type == 'channel' %}
 {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name_underscore }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_create:
