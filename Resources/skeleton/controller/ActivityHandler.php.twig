@@ -7,7 +7,7 @@ use CampaignChain\CoreBundle\Entity\Location;
 use CampaignChain\CoreBundle\Entity\Campaign;
 use CampaignChain\CoreBundle\Entity\Activity;
 use CampaignChain\CoreBundle\Entity\Operation;
-use Doctrine\ORM\EntityManager;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\Session\Session;
 
@@ -22,7 +22,7 @@ class {{ class_name }}Handler extends AbstractActivityHandler
     protected $templating;
 
     public function __construct(
-        EntityManager $em,
+        Registry $em,
         Session $session,
         TwigEngine $templating
     )

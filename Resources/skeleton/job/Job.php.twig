@@ -2,12 +2,12 @@
 namespace {{ namespace|replace({'\\\\': '\\'}) }}\Job;
 
 use CampaignChain\CoreBundle\Job\JobActionInterface;
-use Doctrine\ORM\EntityManager;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 
 class Job implements JobActionInterface
 {
     /**
-     * @var EntityManager
+     * @var Registry
      */
     protected $em;
 
@@ -16,7 +16,7 @@ class Job implements JobActionInterface
      */
     protected $message;
 
-    public function __construct(EntityManager $em)
+    public function __construct(Registry $em)
     {
         $this->em = $em;
     }

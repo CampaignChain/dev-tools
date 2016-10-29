@@ -3,7 +3,7 @@ namespace {{ namespace|replace({'\\\\': '\\'}) }}\Job;
 
 use CampaignChain\CoreBundle\Entity\SchedulerReportOperation;
 use CampaignChain\CoreBundle\Job\JobReportInterface;
-use Doctrine\ORM\EntityManager;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 
 class {{ class_name }}Report implements JobReportInterface
 {
@@ -19,7 +19,7 @@ class {{ class_name }}Report implements JobReportInterface
     protected $message;
     protected $operation;
 
-    public function __construct(EntityManager $em, $container)
+    public function __construct(Registry $em, $container)
     {
         $this->em = $em;
         $this->container = $container;

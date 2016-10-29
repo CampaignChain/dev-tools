@@ -29,7 +29,7 @@ services:
     campaignchain.activity.controller.handler.{{ vendor_name|lower }}.{{ module.module_name_underscore }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}:
         class: {{ namespace|replace({'\\\\': '\\'}) }}\Controller\{{ module.class_name }}Handler
         arguments:
-            - "@doctrine.orm.entity_manager"
+            - "@doctrine"
             - "@session"
             - "@templating"
 {% endfor %}
