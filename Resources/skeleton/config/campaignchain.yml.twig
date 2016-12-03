@@ -21,6 +21,8 @@ modules:
 {% endif %}
 {% if module_type == 'activity' %}
             read: {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name_underscore }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_read
+            read_modal: {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name_underscore }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_read_modal
+
 {% endif %}
 {% if module_type == 'campaign' %}
             plan: {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name_underscore }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_plan

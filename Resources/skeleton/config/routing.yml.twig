@@ -25,6 +25,10 @@
     pattern: /activity/{{ module.module_name_hyphen }}{{ module.module_name_suffix ? '/' ~ module.module_name_suffix|lower : '' }}/{id}
     defaults: { _controller: campaignchain.activity.controller.{{ vendor_name|lower }}.{{ module.module_name_underscore }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}:readAction }
 
+{{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name_underscore }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_read_modal:
+    pattern: /modal/activity/{{ module.module_name_hyphen }}{{ module.module_name_suffix ? '/' ~ module.module_name_suffix|lower : '' }}/{id}
+    defaults: { _controller: campaignchain.activity.controller.{{ vendor_name|lower }}.{{ module.module_name_underscore }}{{ module.module_name_suffix ? '.' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}:readModalAction }
+
 {% endif %}
 {% if module_type == 'campaign' %}
 {{ vendor_name|lower }}_{{ module_type }}_{{ module.module_name_underscore }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}_plan:
