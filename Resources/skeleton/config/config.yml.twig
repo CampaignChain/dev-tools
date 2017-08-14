@@ -10,7 +10,6 @@ assetic:
                 - '@{{ bundle_name }}/Resources/public/css/{{ module.module_name_underscore }}{{ module.module_name_suffix ? '_' ~ module.module_name_suffix|lower|replace({'-':'_'}) : '' }}.css'
 {% endfor %}
 twig:
-    form:
-        resources:
-            - '{{ bundle_name }}:Form:fields.html.twig'
+    form_themes:
+        - '{{ bundle_name }}:Form:fields.html.twig'
 {% endif %}
