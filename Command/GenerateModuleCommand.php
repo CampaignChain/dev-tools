@@ -43,7 +43,7 @@ use CampaignChain\GeneratorBundle\Generator\ModuleGenerator;
 /**
  *
  * Usage:
- * php app/console campaignchain:generate:module
+ * php bin/console campaignchain:generate:module
  *
  */
 class GenerateModuleCommand extends GenerateBundleCommand

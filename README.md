@@ -42,5 +42,5 @@ The CampaignChain module generator will provide hints and tips throughout the mo
 
 You can now start the module generator with the following command:
 ```
-  php app/console campaignchain:generate:module
+  php bin/console campaignchain:generate:module
 ```  
