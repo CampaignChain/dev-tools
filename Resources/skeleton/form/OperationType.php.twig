@@ -11,11 +11,13 @@ class {{ class_name }}OperationType extends OperationType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
+        $this->setOptions($options);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
+        parent::configureOptions($resolver);
+
         $defaults = array();
         $resolver->setDefaults($defaults);
 
@@ -26,9 +28,6 @@ class {{ class_name }}OperationType extends OperationType
             'data_class' => '{{ namespace|replace({'\\\\': '\\'}) }}\Entity\{{ class_name }}',
         );
 
-        if($this->content){
-            $defaults['data'] = $this->content;
-        }
         $resolver->setDefaults($defaults);
         */
     }
